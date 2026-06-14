@@ -1,0 +1,63 @@
+# ─── ENVIRONMENT ──────────────────────
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ─── FRONTEND (Next.js) ───────────────
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.vercel
+
+# ─── BACKEND (Python) ─────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+backend/.venv/
+backend/venv/
+backend/env/
+backend/dist/
+backend/build/
+backend/*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# ─── DATABASE ─────────────────────────
+*.sqlite3
+*.db
+
+# ─── LOGS ─────────────────────────────
+*.log
+logs/
+
+# ─── OS ───────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ─── IDE ──────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+
+# ─── DOCKER ───────────────────────────
+.docker/
+
+# ─── SSL CERTS ────────────────────────
+ssl/
+*.pem
+*.key
+*.crt

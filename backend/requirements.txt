@@ -1,0 +1,28 @@
+# ─── WEB FRAMEWORK ────────────────────────────
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+
+# ─── DATABASE ─────────────────────────────────
+sqlalchemy[asyncio]==2.0.36
+asyncpg==0.30.0
+alembic==1.14.0
+
+# ─── VALIDATION & SETTINGS ────────────────────
+pydantic==2.10.3
+pydantic[email]==2.10.3
+pydantic-settings==2.6.1
+
+# ─── TASK QUEUE ───────────────────────────────
+celery[redis]==5.4.0
+redis==5.2.1
+
+# ─── AUTH ─────────────────────────────────────
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# ─── HTTP CLIENT ──────────────────────────────
+httpx==0.28.1
+
+# ─── UTILITIES ────────────────────────────────
+python-multipart==0.0.12
+python-dotenv==1.0.1

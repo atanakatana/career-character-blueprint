@@ -1,0 +1,45 @@
+# Production overrides
+# Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+services:
+
+  backend:
+    build:
+      target: production
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2
+    volumes: []
+    restart: always
+
+  worker:
+    build:
+      target: production
+    command: celery -A app.celery_app worker --loglevel=warning --concurrency=4
+    volumes: []
+    restart: always
+
+  frontend:
+    build:
+      target: production
+    environment:
+      NODE_ENV: production
+      WATCHPACK_POLLING: ""
+    volumes: []
+    restart: always
+
+  postgres:
+    restart: always
+
+  redis:
+    restart: always
+    command: >
+      redis-server
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+      --requirepass ${REDIS_PASSWORD}
+
+  nginx:
+    restart: always
+    # Mount SSL certs in production:
+    # volumes:
+    #   - ./ssl/cert.pem:/etc/nginx/ssl/cert.pem
+    #   - ./ssl/key.pem:/etc/nginx/ssl/key.pem

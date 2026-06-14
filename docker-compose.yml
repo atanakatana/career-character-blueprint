@@ -1,0 +1,114 @@
+version: '3.9'
+
+services:
+
+  # ─── DATABASE ─────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: ccb_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ccblueprint
+      POSTGRES_USER: ccblueprint
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-devpassword}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ccblueprint"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── CACHE / QUEUE ────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: ccb_redis
+    restart: unless-stopped
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── BACKEND API ──────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      target: development
+    container_name: ccb_backend
+    restart: unless-stopped
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://ccblueprint:${POSTGRES_PASSWORD:-devpassword}@postgres:5432/ccblueprint
+      REDIS_URL: redis://redis:6379/0
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ─── CELERY WORKER ────────────────────────────────────────────────────────
+  worker:
+    build:
+      context: ./backend
+      target: development
+    container_name: ccb_worker
+    restart: unless-stopped
+    command: celery -A app.celery_app worker --loglevel=info --concurrency=2
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://ccblueprint:${POSTGRES_PASSWORD:-devpassword}@postgres:5432/ccblueprint
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - ./backend:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ─── FRONTEND ─────────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      target: development
+    container_name: ccb_frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      WATCHPACK_POLLING: "true"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - backend
+
+  # ─── NGINX REVERSE PROXY ──────────────────────────────────────────────────
+  nginx:
+    build:
+      context: ./nginx
+    container_name: ccb_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  postgres_data:

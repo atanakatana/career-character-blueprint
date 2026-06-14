@@ -1,0 +1,260 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =====================================================
+   CSS CUSTOM PROPERTIES — PIXEL DESIGN SYSTEM TOKENS
+   ===================================================== */
+:root {
+  /* Color palette */
+  --color-bg:           #10141F;
+  --color-panel:        #1C2434;
+  --color-panel-hover:  #243045;
+  --color-gold:         #F5C542;
+  --color-gold-dark:    #C4A033;
+  --color-blue:         #4DA6FF;
+  --color-green:        #5CE27A;
+  --color-text:         #F5F5F5;
+  --color-muted:        #8892A4;
+  --color-border:       #2E3B52;
+  --color-error:        #FF6B6B;
+
+  /* Pixel grid unit */
+  --pixel:              4px;
+
+  /* Border */
+  --pixel-border-w:     2px;
+
+  /* Shadows */
+  --shadow-pixel:       4px 4px 0px rgba(0, 0, 0, 0.6);
+  --shadow-pixel-sm:    2px 2px 0px rgba(0, 0, 0, 0.6);
+  --shadow-gold:        4px 4px 0px var(--color-gold-dark);
+  --shadow-gold-sm:     2px 2px 0px var(--color-gold-dark);
+  --shadow-inset:       inset 2px 2px 0px rgba(255,255,255,0.08),
+                        inset -2px -2px 0px rgba(0,0,0,0.3);
+}
+
+/* =====================================================
+   BASE RESET
+   ===================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* Pixel scrollbar */
+::-webkit-scrollbar       { width: 8px; }
+::-webkit-scrollbar-track { background: var(--color-panel); }
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border: 1px solid var(--color-panel);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-gold); }
+
+/* =====================================================
+   PIXEL COMPONENT UTILITIES
+   ===================================================== */
+@layer components {
+
+  /* ── PANELS ─────────────────────────────────────── */
+  .pixel-panel {
+    background-color: var(--color-panel);
+    border: var(--pixel-border-w) solid var(--color-gold);
+    box-shadow: var(--shadow-pixel), var(--shadow-inset);
+  }
+
+  .pixel-panel-subtle {
+    background-color: var(--color-panel);
+    border: var(--pixel-border-w) solid var(--color-border);
+    box-shadow: var(--shadow-pixel);
+  }
+
+  .pixel-panel-accent {
+    background-color: var(--color-panel);
+    border: var(--pixel-border-w) solid var(--color-blue);
+    box-shadow: 4px 4px 0px rgba(77,166,255,0.3), var(--shadow-inset);
+  }
+
+  /* ── BORDERS ────────────────────────────────────── */
+  .pixel-border       { border: var(--pixel-border-w) solid var(--color-gold);  box-shadow: var(--shadow-pixel); }
+  .pixel-border-blue  { border: var(--pixel-border-w) solid var(--color-blue);  box-shadow: 4px 4px 0px rgba(77,166,255,0.35); }
+  .pixel-border-green { border: var(--pixel-border-w) solid var(--color-green); box-shadow: 4px 4px 0px rgba(92,226,122,0.35); }
+  .pixel-border-muted { border: var(--pixel-border-w) solid var(--color-border);box-shadow: var(--shadow-pixel); }
+
+  /* ── BUTTONS ────────────────────────────────────── */
+  .pixel-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-press), monospace;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.06s, box-shadow 0.06s;
+    line-height: 1;
+  }
+  .pixel-btn:hover  { transform: translate(2px, 2px); }
+  .pixel-btn:active { transform: translate(4px, 4px); }
+  .pixel-btn:disabled, .pixel-btn[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .pixel-btn-primary {
+    @apply pixel-btn;
+    background-color: var(--color-gold);
+    color: var(--color-bg);
+    border: 2px solid var(--color-gold-dark);
+    box-shadow: var(--shadow-gold);
+  }
+  .pixel-btn-primary:hover  { box-shadow: var(--shadow-gold-sm); }
+  .pixel-btn-primary:active { box-shadow: none; }
+
+  .pixel-btn-secondary {
+    @apply pixel-btn;
+    background-color: transparent;
+    color: var(--color-gold);
+    border: 2px solid var(--color-gold);
+    box-shadow: var(--shadow-pixel);
+  }
+  .pixel-btn-secondary:hover {
+    background-color: rgba(245,197,66,0.08);
+    box-shadow: var(--shadow-pixel-sm);
+  }
+  .pixel-btn-secondary:active { box-shadow: none; }
+
+  .pixel-btn-ghost {
+    @apply pixel-btn;
+    background-color: transparent;
+    color: var(--color-muted);
+    border: 2px solid var(--color-border);
+    box-shadow: var(--shadow-pixel);
+  }
+  .pixel-btn-ghost:hover {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+    box-shadow: var(--shadow-pixel-sm);
+  }
+
+  .pixel-btn-danger {
+    @apply pixel-btn;
+    background-color: var(--color-error);
+    color: #fff;
+    border: 2px solid #b91c1c;
+    box-shadow: 4px 4px 0px #7f1d1d;
+  }
+  .pixel-btn-danger:hover  { box-shadow: 2px 2px 0px #7f1d1d; }
+  .pixel-btn-danger:active { box-shadow: none; }
+
+  /* ── INPUTS ─────────────────────────────────────── */
+  .pixel-input {
+    width: 100%;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    border: 2px solid var(--color-border);
+    font-family: var(--font-inter), sans-serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 0.8rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .pixel-input:focus {
+    outline: none;
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 1px var(--color-gold);
+  }
+  .pixel-input::placeholder { color: var(--color-muted); }
+  .pixel-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ── TAGS / BADGES ──────────────────────────────── */
+  .pixel-tag {
+    display: inline-block;
+    font-family: var(--font-press), monospace;
+    font-size: 0.45rem;
+    background-color: var(--color-gold);
+    color: var(--color-bg);
+    padding: 3px 7px;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+  }
+  .pixel-tag-blue  { @apply pixel-tag; background-color: var(--color-blue); }
+  .pixel-tag-green { @apply pixel-tag; background-color: var(--color-green); color: var(--color-bg); }
+  .pixel-tag-muted { @apply pixel-tag; background-color: var(--color-border); color: var(--color-muted); }
+
+  /* ── DIVIDER ────────────────────────────────────── */
+  .pixel-divider {
+    height: 2px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--color-gold) 15%,
+      var(--color-gold) 85%,
+      transparent
+    );
+    margin: 1rem 0;
+  }
+
+  .pixel-divider-subtle {
+    height: 1px;
+    background: var(--color-border);
+    margin: 1rem 0;
+  }
+
+  /* ── DIALOG WINDOW (RPG style) ───────────────────── */
+  .pixel-dialog {
+    @apply pixel-panel;
+    position: relative;
+  }
+  .pixel-dialog::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(245,197,66,0.15);
+    pointer-events: none;
+  }
+
+}
+
+/* =====================================================
+   KEYFRAME ANIMATIONS
+   ===================================================== */
+@keyframes pixel-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes pixel-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
+}
+
+@keyframes pixel-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.55; }
+}
+
+@keyframes pixel-slide-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-pixel-blink    { animation: pixel-blink 1s step-end infinite; }
+.animate-pixel-float    { animation: pixel-float 3s ease-in-out infinite; }
+.animate-pixel-pulse    { animation: pixel-pulse 2s ease-in-out infinite; }
+.animate-pixel-slide-in { animation: pixel-slide-in 0.3s ease-out forwards; }
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-pixel-blink,
+  .animate-pixel-float,
+  .animate-pixel-pulse,
+  .animate-pixel-slide-in {
+    animation: none;
+  }
+}
