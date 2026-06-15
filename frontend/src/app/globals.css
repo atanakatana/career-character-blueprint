@@ -150,6 +150,13 @@ html { scroll-behavior: smooth; }
   .pixel-btn-danger:hover  { box-shadow: 2px 2px 0px #7f1d1d; }
   .pixel-btn-danger:active { box-shadow: none; }
 
+  /* ── SELECT OPTION THEMING (native dropdown) ───── */
+  select option, select optgroup {
+    background-color: var(--color-panel);
+    color: var(--color-text);
+  }
+  select optgroup { color: var(--color-gold); }
+
   /* ── INPUTS ─────────────────────────────────────── */
   .pixel-input {
     width: 100%;
