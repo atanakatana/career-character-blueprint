@@ -1,6 +1,5 @@
 from uuid import uuid4
 from datetime import datetime
-from app.models.report import Report
 from sqlalchemy import String, Text, Integer, TIMESTAMP, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID
@@ -36,7 +35,7 @@ class Submission(Base):
     retry_count:              Mapped[int]              = mapped_column(Integer, nullable=False, default=0)
 
     # ── Relationships ────────────────────────────────────────────────────────
-    report:    Mapped["Report"]      = relationship("Report",    back_populates="submission", uselist=False)
+    report:     Mapped["Report"]      = relationship("Report",    back_populates="submission", uselist=False)
     email_logs: Mapped[list["EmailLog"]] = relationship("EmailLog", back_populates="submission")
 
     def __repr__(self) -> str:
