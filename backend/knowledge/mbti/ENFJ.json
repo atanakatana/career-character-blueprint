@@ -1,0 +1,40 @@
+{
+  "type": "ENFJ",
+  "name": "The Protagonist",
+  "work_style": "People-focused leader who energises teams and drives collaboration. Natural facilitator and developer of human potential. Work best when helping others grow while advancing a meaningful goal.",
+  "strengths": [
+    "People development",
+    "Inspirational communication",
+    "Team cohesion",
+    "Social awareness"
+  ],
+  "energy_drains": [
+    "Work that ignores human impact",
+    "Prolonged conflict",
+    "Working in isolation",
+    "Environments that suppress individual expression"
+  ],
+  "environment_needs": [
+    "People interaction",
+    "Meaningful goal",
+    "Recognition of contributions",
+    "Collaborative culture"
+  ],
+  "career_domains": [
+    "People & Culture",
+    "Executive Coaching",
+    "Education",
+    "Non-profit Leadership",
+    "Healthcare Management",
+    "Marketing",
+    "Facilitation",
+    "Change Management"
+  ],
+  "decision_making": "Weigh both data and human impact. Good at building consensus. Can over-prioritise team harmony at the expense of hard decisions.",
+  "leadership_style": "Develop people actively. Lead through inspiration and genuine care. Build strong loyalty. Need to balance people focus with business requirements.",
+  "growth_edges": [
+    "Making hard decisions that disappoint some",
+    "Prioritising own needs",
+    "Avoiding over-extension from helping too many people"
+  ]
+}

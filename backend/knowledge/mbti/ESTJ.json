@@ -1,0 +1,40 @@
+{
+  "type": "ESTJ",
+  "name": "The Executive",
+  "work_style": "Organised, directive, and results-driven. Natural at running processes and organisations. Bring clear structure to complex environments. Direct communicators who value efficiency, accountability, and hierarchy.",
+  "strengths": [
+    "Operational leadership",
+    "Process implementation",
+    "Clear communication",
+    "Team accountability"
+  ],
+  "energy_drains": [
+    "Lack of structure",
+    "Underperforming team members",
+    "Unclear decision authority",
+    "Values conflicts"
+  ],
+  "environment_needs": [
+    "Clear hierarchy",
+    "Performance-oriented culture",
+    "Decision authority",
+    "Structured processes"
+  ],
+  "career_domains": [
+    "Operations Management",
+    "General Management",
+    "Military",
+    "Law",
+    "Business Administration",
+    "Financial Planning",
+    "Corporate Training",
+    "Logistics"
+  ],
+  "decision_making": "Decisively apply proven methods. Value precedent and established process. Can be resistant to unproven approaches — need evidence before pivoting.",
+  "leadership_style": "Direct, structured, and accountable. Set clear expectations and hold team to them. Value loyalty and consistent performance.",
+  "growth_edges": [
+    "Openness to unproven methods",
+    "Listening before directing",
+    "Adapting to different communication styles"
+  ]
+}

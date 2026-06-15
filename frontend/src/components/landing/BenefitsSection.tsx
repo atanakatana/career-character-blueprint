@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import { PixelPanel } from '@/components/ui/PixelPanel'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 

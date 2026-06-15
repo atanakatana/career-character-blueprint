@@ -1,0 +1,40 @@
+{
+  "type": "INTJ",
+  "name": "The Architect",
+  "work_style": "Independent, systematic and long-horizon. Work best when given a complex problem and autonomy to solve it. Prefer deep work over meetings. Strategy and architecture over execution details.",
+  "strengths": [
+    "Systems thinking",
+    "Long-range planning",
+    "Independent execution",
+    "Pattern recognition"
+  ],
+  "energy_drains": [
+    "Micromanagement",
+    "Repetitive routine work",
+    "Political games without substance",
+    "Being asked to explain reasoning to unconvinced audiences repeatedly"
+  ],
+  "environment_needs": [
+    "High autonomy",
+    "Intellectually rigorous colleagues",
+    "Clear goals with minimal process constraints",
+    "Work that has strategic impact"
+  ],
+  "career_domains": [
+    "Software Architecture",
+    "Management Consulting",
+    "Research",
+    "Product Strategy",
+    "Data Science",
+    "Law",
+    "Investment Management",
+    "Entrepreneurship"
+  ],
+  "decision_making": "Highly independent. Gather data extensively, then decide with conviction. Resistant to reversing decisions once made. Can appear stubborn — actually just high-conviction after deep analysis.",
+  "leadership_style": "Lead through vision and high standards. Set direction, delegate execution, intervene only when outcomes are at risk.",
+  "growth_edges": [
+    "Communicating rationale to others",
+    "Tolerance for imperfect team output",
+    "Recognising emotional dimensions of decisions"
+  ]
+}

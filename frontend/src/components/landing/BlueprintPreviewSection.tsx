@@ -1,6 +1,5 @@
 'use client'
 
-import react from 'react'
 import Link from 'next/link'
 import { PixelButton } from '@/components/ui/PixelButton'
 import { PixelPanel } from '@/components/ui/PixelPanel'
@@ -22,7 +21,7 @@ const MOCK = {
       fit:         96,
       fitColor:    'bg-pixel-green',
       why:         'Your INFJ pattern-recognition and genuine user empathy make you exceptional at surfacing insight others miss. Generator energy means sustained deep work comes naturally when the problem matters.',
-      firstAction: "Complete the Google UX Research Certificate or Nielsen Norman Group UX Research program.",
+      firstAction: 'Complete the Google UX Research Certificate or Nielsen Norman Group's UX Research program.',
       income:      'Rp 18M – 40M / month',
       growth:      'High — demand accelerating across tech and product-led companies',
       visible:     true,

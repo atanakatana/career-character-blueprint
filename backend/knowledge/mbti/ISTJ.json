@@ -1,0 +1,41 @@
+{
+  "type": "ISTJ",
+  "name": "The Logistician",
+  "work_style": "Reliable, methodical, and standards-driven. Bring order to complex systems. Work best with clear expectations, defined processes, and measurable outcomes. Deliver consistently, quietly, and with precision.",
+  "strengths": [
+    "Reliability",
+    "Process excellence",
+    "Attention to detail",
+    "Risk management"
+  ],
+  "energy_drains": [
+    "Constant change without rationale",
+    "Ambiguous expectations",
+    "Having to repeat work due to others' lack of process",
+    "Chaotic environments"
+  ],
+  "environment_needs": [
+    "Clear structure",
+    "Stable expectations",
+    "Recognition of consistent output",
+    "Quality-focused culture"
+  ],
+  "career_domains": [
+    "Accounting",
+    "Operations Management",
+    "Project Management",
+    "Compliance",
+    "Engineering",
+    "Law",
+    "Finance",
+    "Supply Chain",
+    "Healthcare Administration"
+  ],
+  "decision_making": "Evidence-based and methodical. Thoroughly evaluate before deciding. Cautious about deviation from what has worked before.",
+  "leadership_style": "Lead through example and consistency. High standards, clear expectations, fair evaluation. Prefer managing by process over inspiration.",
+  "growth_edges": [
+    "Adapting to necessary change",
+    "Considering novel approaches",
+    "Communicating concerns proactively rather than absorbing problems"
+  ]
+}

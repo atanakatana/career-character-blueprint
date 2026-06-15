@@ -1,0 +1,41 @@
+{
+  "type": "ISTP",
+  "name": "The Virtuoso",
+  "work_style": "Practical problem-solver who excels with tools, systems, and real-world challenges. Thrive in hands-on, technical, and immediate environments. Efficient and precise, with strong spatial and mechanical intuition.",
+  "strengths": [
+    "Technical mastery",
+    "Crisis problem-solving",
+    "Efficient execution",
+    "Objectivity"
+  ],
+  "energy_drains": [
+    "Abstract theorising without application",
+    "Long meetings",
+    "Emotional volatility",
+    "Over-structured environments"
+  ],
+  "environment_needs": [
+    "Technical challenge",
+    "Autonomy",
+    "Real-world application",
+    "Results-focused culture"
+  ],
+  "career_domains": [
+    "Engineering",
+    "IT",
+    "Skilled Trades",
+    "Military",
+    "Finance (Trading)",
+    "Forensics",
+    "Product Development",
+    "Data Analysis",
+    "Motorsport"
+  ],
+  "decision_making": "Fast, pragmatic, and data-driven. Decide based on what works, not what should theoretically work. Comfortable with uncertainty if they can experiment their way through it.",
+  "leadership_style": "Lead by doing. Set technical standard. Prefer small teams with high competence. Minimal management overhead.",
+  "growth_edges": [
+    "Long-term planning",
+    "Communicating technical insight to non-technical stakeholders",
+    "Emotional dimension of team dynamics"
+  ]
+}

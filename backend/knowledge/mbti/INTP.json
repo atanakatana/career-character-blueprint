@@ -1,0 +1,40 @@
+{
+  "type": "INTP",
+  "name": "The Thinker",
+  "work_style": "Exploratory and concept-driven. Need intellectual freedom to question assumptions. Work best on novel problems with no established answer. Deep diver who loses track of time when genuinely engaged.",
+  "strengths": [
+    "Lateral thinking",
+    "Logical precision",
+    "Abstract pattern recognition",
+    "Theoretical model-building"
+  ],
+  "energy_drains": [
+    "Administrative tasks",
+    "Rigid procedures",
+    "Emotionally charged environments",
+    "Being forced to commit before thorough analysis"
+  ],
+  "environment_needs": [
+    "Intellectual freedom",
+    "Tolerance for unconventional approaches",
+    "Minimal bureaucracy",
+    "Problems at the frontier of a field"
+  ],
+  "career_domains": [
+    "Research",
+    "Software Engineering",
+    "Data Science",
+    "Philosophy/Academia",
+    "Cryptography",
+    "Theoretical Physics",
+    "Systems Design",
+    "Technical Writing"
+  ],
+  "decision_making": "Exhaustive analysis, sometimes to the point of paralysis. Need to acknowledge when 'good enough' data is available. Strong at identifying flaws in reasoning.",
+  "leadership_style": "Lead through ideas and analysis. Reluctant leaders who excel in technical advisory roles over formal management.",
+  "growth_edges": [
+    "Following through on implementation",
+    "Communicating ideas accessibly",
+    "Managing project closure"
+  ]
+}

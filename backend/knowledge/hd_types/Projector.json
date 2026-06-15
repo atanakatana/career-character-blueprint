@@ -1,0 +1,15 @@
+{
+  "type": "Projector",
+  "strategy": "Wait for the Invitation",
+  "energy": "Non-energy type. Cannot sustain energy the way Generators do. Need to manage output carefully and rest regularly. 20% of the population; designed to guide rather than produce.",
+  "work_approach": "Natural advisor and guide. See systems and people clearly. Most effective when invited to share insight. Excellent at directing the work of others — not designed for sustained manual or repetitive output.",
+  "career_advice": "Position yourself as the expert others invite in. Build a reputation and wait for the right recognition. Do not work harder to prove yourself — work more strategically and let your insight speak.",
+  "burnout_signal": "Bitterness. Working without recognition or invitation, or trying to match Generator energy, leads to exhaustion and resentment.",
+  "strengths": [
+    "Systems awareness",
+    "Insight and guidance",
+    "Efficiency through directing",
+    "Deep perceptiveness"
+  ],
+  "pitfall": "Over-working to match Generator output, accepting invitations from the wrong people, sharing insights before invited."
+}
