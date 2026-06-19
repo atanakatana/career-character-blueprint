@@ -17,6 +17,10 @@ from app.models.report import Report
 from app.models.report_token import ReportToken
 from app.models.prompt_template import PromptTemplate
 from app.models.ai_model_config import AIModelConfig
+from app.models.email_log import EmailLog
+from app.config import settings
+from app.email.resend_client import resend_client
+from app.email.templates import build_blueprint_email
 from app.ai.gateway import AIConfig
 from app.ai.providers.gemini import GeminiProvider
 from app.ai.knowledge import knowledge_loader
@@ -77,14 +81,96 @@ def generate_blueprint(self, submission_id: str):
 )
 def send_blueprint_email(self, submission_id: str, token: str):
     """
-    Email delivery task.
-    Sprint 6 will implement the Resend API integration.
-    This stub logs so the pipeline can be verified end-to-end.
+    Deliver the blueprint link to the user via Resend.
+    Retries 3× with 60s / 120s / 180s backoff.
+    All attempts are logged to the email_logs table.
     """
     logger.info(
-        f"[send_blueprint_email] submission={submission_id} "
-        f"token={token[:12]}... (Sprint 6: email delivery)"
+        f"[send_blueprint_email] START submission={submission_id} "
+        f"attempt={self.request.retries + 1}/{self.max_retries + 1}"
     )
+    try:
+        asyncio.run(_send_email_pipeline(submission_id, token))
+    except Exception as exc:
+        if self.request.retries < self.max_retries:
+            backoff = 60 * (self.request.retries + 1)
+            logger.warning(
+                f"[send_blueprint_email] RETRY in {backoff}s: {exc}"
+            )
+            raise self.retry(exc=exc, countdown=backoff)
+        logger.error(f"[send_blueprint_email] PERMANENT FAILURE: {exc}")
+        raise
+
+
+async def _send_email_pipeline(submission_id: str, token: str) -> None:
+    """Load submission + report, build HTML email, send via Resend, log result."""
+    async with AsyncSessionLocal() as db:
+
+        # Load submission
+        submission = await db.scalar(
+            select(Submission).where(Submission.id == submission_id)
+        )
+        if not submission:
+            raise ValueError(f"Submission not found: {submission_id}")
+
+        # Load report
+        report = await db.scalar(
+            select(Report).where(Report.submission_id == submission_id)
+        )
+        if not report:
+            raise ValueError(f"Report not found for submission: {submission_id}")
+
+        # Build email content
+        blueprint_url = f"{settings.FRONTEND_BASE_URL}/blueprint/{token}"
+
+        html = build_blueprint_email(
+            nickname        = submission.nickname,
+            character_title = report.character_title,
+            mbti_type       = submission.mbti_type,
+            hd_type         = submission.hd_type,
+            hd_profile      = submission.hd_profile,
+            blueprint_url   = blueprint_url,
+        )
+
+        subject = f"{report.character_title} — Your Career Blueprint is Ready"
+
+        # Attempt delivery
+        resend_message_id: str | None = None
+        status    = "failed"
+        error_msg: str | None = None
+
+        try:
+            result = resend_client.send(
+                to      = submission.email,
+                subject = subject,
+                html    = html,
+            )
+            resend_message_id = result.get("id")
+            status = "sent"
+        except Exception as exc:
+            error_msg = str(exc)[:2000]
+            logger.error(
+                f"[email] Delivery failed to {submission.email}: {exc}"
+            )
+
+        # Always persist an audit log entry
+        db.add(EmailLog(
+            submission_id      = submission.id,
+            email_type         = "blueprint_ready",
+            recipient_email    = submission.email,
+            resend_message_id  = resend_message_id,
+            status             = status,
+            error_message      = error_msg,
+        ))
+        await db.commit()
+
+        if status == "failed":
+            raise RuntimeError(f"Email delivery failed: {error_msg}")
+
+        logger.info(
+            f"[email] Sent to {submission.email} | "
+            f"resend_id={resend_message_id} | url={blueprint_url}"
+        )
 
 
 # ─── Async pipeline ───────────────────────────────────────────────────────────
