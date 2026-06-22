@@ -11,7 +11,7 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.celery_app import celery_app
-from app.database import AsyncSessionLocal
+from app.database import WorkerSessionLocal
 from app.models.submission import Submission
 from app.models.report import Report
 from app.models.report_token import ReportToken
@@ -104,7 +104,7 @@ def send_blueprint_email(self, submission_id: str, token: str):
 
 async def _send_email_pipeline(submission_id: str, token: str) -> None:
     """Load submission + report, build HTML email, send via Resend, log result."""
-    async with AsyncSessionLocal() as db:
+    async with WorkerSessionLocal() as db:
 
         # Load submission
         submission = await db.scalar(
@@ -179,7 +179,7 @@ async def _pipeline(submission_id: str) -> None:
     """Complete async generation pipeline — runs inside asyncio.run()."""
     t_start = time.time()
 
-    async with AsyncSessionLocal() as db:
+    async with WorkerSessionLocal() as db:
 
         # 1. Load submission
         submission = await db.scalar(
@@ -331,7 +331,7 @@ async def _get_active_provider(db: AsyncSession) -> tuple:
 
 
 async def _mark_failed(submission_id: str, error_msg: str) -> None:
-    async with AsyncSessionLocal() as db:
+    async with WorkerSessionLocal() as db:
         await db.execute(
             update(Submission)
             .where(Submission.id == submission_id)
