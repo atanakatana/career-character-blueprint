@@ -16,9 +16,9 @@ const STEPS = [
   {
     number:      '02',
     symbol:      '⬡',
-    title:       'AI Builds Your Codex',
-    description: 'The AI cross-references your personality type, energy design, and career context against a structured knowledge base — then writes your 10-section blueprint.',
-    detail:      '≈ 2 minutes',
+    title:       'Our Team Working Your Codex',
+    description: 'Our professionals cross-references your personality type, energy design, and career context against a structured knowledge base — then creates your 10-section blueprint.',
+    detail:      '≈ 24 hours',
     color:       'text-pixel-blue',
   },
   {

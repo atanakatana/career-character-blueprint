@@ -71,7 +71,7 @@ export function HeroSection() {
           >
             {/* Eyebrow badges */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="pixel-tag">AI-POWERED</span>
+              <span className="pixel-tag">PROFESIONAL TEAM</span>
               <span className="pixel-tag-blue">CAREER GUIDANCE</span>
             </div>
 
@@ -104,7 +104,7 @@ export function HeroSection() {
                 </PixelButton>
               </Link>
               <span className="font-press text-[0.42rem] text-pixel-muted">
-                Free&nbsp;·&nbsp;5 min&nbsp;·&nbsp;Delivered by email
+                Dependable&nbsp;·&nbsp;Quick Result&nbsp;·&nbsp;Delivered by email
               </span>
             </div>
           </motion.div>

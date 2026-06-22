@@ -58,7 +58,7 @@ export function CtaSection() {
 
           {/* Trust line */}
           <p className="font-press text-[0.4rem] text-pixel-muted mt-5">
-            Free&nbsp; · &nbsp;5 minutes&nbsp; · &nbsp;Delivered to your inbox
+            For you&nbsp; · &nbsp;Less than 24 hours&nbsp; · &nbsp;Delivered to your inbox
           </p>
         </AnimatedSection>
 

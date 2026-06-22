@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 const PROCESSING_STEPS = [
   { label: 'Character data received',    done: true,  active: false },
-  { label: 'AI crafting your codex',     done: false, active: true  },
+  { label: 'Our team crafting your codex',     done: false, active: true  },
   { label: 'Blueprint delivered by email', done: false, active: false },
 ]
 
@@ -71,10 +71,10 @@ export default function ThankYouPage() {
               <span className="font-press text-[0.4rem] text-pixel-muted mt-0.5">⏱</span>
               <div>
                 <p className="font-press text-[0.42rem] text-pixel-text mb-1">
-                  Estimated time: 2–3 minutes
+                  Estimated time: less than 24 hours
                 </p>
                 <p className="font-body text-sm text-pixel-muted leading-relaxed">
-                  The AI is synthesising your MBTI type, Human Design configuration, 
+                  Our team is synthesising your MBTI type, Human Design configuration, 
                   and career context into a 10-section personalised blueprint.
                 </p>
               </div>
@@ -88,7 +88,7 @@ export default function ThankYouPage() {
                 </p>
                 <p className="font-body text-sm text-pixel-muted leading-relaxed">
                   Your blueprint link will arrive by email. Check your spam folder 
-                  if it doesn't appear within 5 minutes.
+                  if it doesn't appear within 3 days.
                 </p>
               </div>
             </div>
