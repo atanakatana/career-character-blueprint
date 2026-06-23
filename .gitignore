@@ -28,6 +28,7 @@ backend/*.egg-info/
 .coverage
 htmlcov/
 .mypy_cache/
+backend/testing/
 
 # ─── DATABASE ─────────────────────────
 *.sqlite3

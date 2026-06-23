@@ -44,12 +44,18 @@ export interface BlueprintReport {
   created_at:      string
   submission: {
     nickname:      string
+    email:         string
     mbti_type:     string
     hd_type:       string
     hd_authority:  string
     hd_profile:    string
+    status:        string
+    created_at:    string
   }
 }
+
+// Alias used by the report page components
+export type BlueprintReportResponse = BlueprintReport
 
 // ─── API RESPONSES ──────────────────────────────────────────────────────────
 export interface SubmissionResponse {

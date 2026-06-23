@@ -106,14 +106,14 @@ async def seed() -> None:
         if not await db.scalar(select(AIModelConfig).where(AIModelConfig.provider == "gemini")):
             db.add(AIModelConfig(
                 provider="gemini",
-                model_name="gemini-1.5-pro",
+                model_name="gemini-2.5-flash",
                 is_active=True,
                 api_key_env_var="GEMINI_API_KEY",
                 max_tokens=8000,
                 temperature=0.7,
                 config_json={"response_mime_type": "application/json"},
             ))
-            print("✓ Gemini config:    gemini-1.5-pro (active)")
+            print("✓ Gemini config:    gemini-2.5-flash (active)")
         else:
             print("• Gemini model config already exists")
 
