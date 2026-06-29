@@ -25,6 +25,45 @@ class AdminProfile(BaseModel):
     model_config = {"from_attributes": True}
 
 
+# ─── SUBMISSION DETAIL (admin) ────────────────────────────────────────────────
+class AdminSubmissionDetail(BaseModel):
+    """Full submission data for the admin detail view."""
+    id:                      UUID
+    nickname:                str
+    email:                   str
+    mbti_type:               str
+    hd_type:                 str
+    hd_authority:            str
+    hd_profile:              str
+    current_occupation:      str
+    burnout_triggers:        str
+    success_vision:          str
+    status:                  str
+    created_at:              datetime
+    celery_task_id:          str | None
+    processing_started_at:   datetime | None
+    processing_completed_at: datetime | None
+    error_message:           str | None
+    retry_count:             int
+    report_token:            str | None = None   # populated from ReportToken join
+
+    model_config = {"from_attributes": True}
+
+
+# ─── EMAIL LOG ────────────────────────────────────────────────────────────────
+class EmailLogResponse(BaseModel):
+    id:                 UUID
+    submission_id:      UUID
+    email_type:         str
+    recipient_email:    str
+    resend_message_id:  str | None
+    status:             str
+    error_message:      str | None
+    created_at:         datetime
+
+    model_config = {"from_attributes": True}
+
+
 # ─── PROMPT TEMPLATE ─────────────────────────────────────────────────────────
 class PromptTemplateCreate(BaseModel):
     name:           str
