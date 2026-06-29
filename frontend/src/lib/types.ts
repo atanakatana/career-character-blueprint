@@ -65,3 +65,18 @@ export interface ApiError {
 
 // ─── UI STATES ──────────────────────────────────────────────────────────────
 export type LoadingState = 'idle' | 'loading' | 'success' | 'error'
+
+// ─── Report page alias ───────────────────────────────────────────────────────
+// Extends BlueprintReport with the full submission fields returned by the API
+export interface BlueprintReportResponse extends BlueprintReport {
+  submission: {
+    nickname:      string
+    email:         string
+    mbti_type:     string
+    hd_type:       string
+    hd_authority:  string
+    hd_profile:    string
+    status:        string
+    created_at:    string
+  }
+}

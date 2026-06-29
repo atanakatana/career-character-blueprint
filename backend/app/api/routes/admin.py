@@ -13,11 +13,14 @@ from app.core.dependencies import get_current_admin
 from app.models.admin_user import AdminUser
 from app.models.submission import Submission
 from app.models.report import Report
+from app.models.report_token import ReportToken
+from app.models.email_log import EmailLog
 from app.models.prompt_template import PromptTemplate
 from app.models.ai_model_config import AIModelConfig
 from app.celery_app import celery_app
 from app.schemas.admin import (
     AdminLoginRequest, AdminLoginResponse, AdminProfile,
+    AdminSubmissionDetail, EmailLogResponse,
     PromptTemplateCreate, PromptTemplateUpdate, PromptTemplateResponse,
     AIModelConfigCreate, AIModelConfigResponse,
 )
@@ -102,19 +105,28 @@ async def list_submissions(
     )
 
 
-@router.get("/submissions/{submission_id}", response_model=SubmissionSummary, summary="Get submission detail")
+@router.get("/submissions/{submission_id}", summary="Get full submission detail")
 async def get_submission(
     submission_id: str,
     db:     AsyncSession = Depends(get_db),
     _admin: AdminUser    = Depends(get_current_admin),
-) -> SubmissionSummary:
+) -> dict:
     result = await db.execute(select(Submission).where(Submission.id == submission_id))
     submission: Submission | None = result.scalar_one_or_none()
 
     if submission is None:
         raise HTTPException(status_code=404, detail="Submission not found")
 
-    return SubmissionSummary.model_validate(submission)
+    # Fetch report token if a completed report exists
+    report_token: str | None = await db.scalar(
+        select(ReportToken.token)
+        .join(Report, Report.id == ReportToken.report_id)
+        .where(Report.submission_id == submission_id)
+        .limit(1)
+    )
+
+    base = AdminSubmissionDetail.model_validate(submission)
+    return {**base.model_dump(), "report_token": report_token}
 
 
 @router.post("/submissions/{submission_id}/regenerate", summary="Re-trigger blueprint generation")
@@ -242,3 +254,21 @@ async def activate_model(
 
     await db.commit()
     return {"message": "Model config activated", "id": model_id}
+
+
+# ── EMAIL LOGS ────────────────────────────────────────────────────────────────
+
+@router.get("/emails", response_model=list[EmailLogResponse], summary="List email delivery logs")
+async def list_email_logs(
+    skip:    int           = 0,
+    limit:   int           = 100,
+    db:      AsyncSession  = Depends(get_db),
+    _admin:  AdminUser     = Depends(get_current_admin),
+) -> list[EmailLogResponse]:
+    result = await db.execute(
+        select(EmailLog)
+        .order_by(EmailLog.created_at.desc())
+        .offset(skip)
+        .limit(min(limit, 500))
+    )
+    return [EmailLogResponse.model_validate(log) for log in result.scalars().all()]
