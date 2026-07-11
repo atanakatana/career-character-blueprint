@@ -14,6 +14,7 @@ export interface SubmissionFormData {
 }
 
 // ─── REPORT STRUCTURES ──────────────────────────────────────────────────────
+
 export interface CareerRecommendation {
   career_name:             string
   why_it_fits:             string
@@ -23,17 +24,33 @@ export interface CareerRecommendation {
   future_growth_potential: string
 }
 
+/**
+ * v2 structured environment — explicit pros/cons lists.
+ * v1 reports stored this as a prose string.
+ */
+export interface WorkEnvironment {
+  pros: string[]
+  cons: string[]
+}
+
+/**
+ * v2 schema: bullet-type fields are string[] instead of prose strings.
+ * Union types preserve backward compatibility with v1 reports in the DB.
+ */
 export interface ReportData {
-  profile_summary:          string
-  capacity_and_energy:      string
-  blind_spots:              string
-  ideal_work_environment:   string
-  career_recommendations:   CareerRecommendation[]
-  long_term_vision:         string
-  skill_development_roadmap: string
-  decision_making_guide:    string
-  action_plan:              string[]
-  closing_statement:        string
+  // v2: string[]  |  v1 fallback: string
+  profile_summary:           string[] | string
+  capacity_and_energy:       string[] | string
+  blind_spots:               string[] | string
+  ideal_work_environment:    WorkEnvironment | string   // v2: object  |  v1: string
+  long_term_vision:          string[] | string
+  skill_development_roadmap: string[] | string
+  decision_making_guide:     string[] | string
+
+  // unchanged from v1
+  career_recommendations:    CareerRecommendation[]
+  action_plan:               string[]
+  closing_statement:         string
 }
 
 export interface BlueprintReport {
