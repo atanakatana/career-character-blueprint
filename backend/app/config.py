@@ -35,8 +35,9 @@ class Settings(BaseSettings):
     OPENROUTER_API_KEY: Optional[str] = None
 
     # ── Email (Resend) ─────────────────────────────────────────────────────
-    RESEND_API_KEY: Optional[str] = None
+    RESEND_API_KEY:    Optional[str] = None
     RESEND_FROM_EMAIL: str = "noreply@yourdomain.com"
+    RESEND_FROM_NAME:  str = "Character Career Blueprint"
 
     # ── Frontend ───────────────────────────────────────────────────────────
     FRONTEND_BASE_URL: str = "http://localhost:3000"

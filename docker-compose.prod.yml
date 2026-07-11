@@ -1,45 +1,77 @@
-# Production overrides
-# Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# docker-compose.prod.yml
+# ─────────────────────────────────────────────────────────────────────────────
+# Production deployment overlay.
+#
+# Usage (with a dedicated env file):
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml \
+#     --env-file .env.production up -d --build
+#
+# This file OVERRIDES the base docker-compose.yml.
+# Both files must always be passed together.
+#
+# Required extra vars (add to .env.production):
+#   SITE_URL        — public URL, e.g. https://ccb.yourdomain.com
+#   REDIS_PASSWORD  — strong random password for Redis
+# ─────────────────────────────────────────────────────────────────────────────
 
 services:
 
-  backend:
-    build:
-      target: production
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2
-    volumes: []
-    restart: always
-
-  worker:
-    build:
-      target: production
-    command: celery -A app.celery_app worker --loglevel=warning --concurrency=4
-    volumes: []
-    restart: always
-
-  frontend:
-    build:
-      target: production
-    environment:
-      NODE_ENV: production
-      WATCHPACK_POLLING: ""
-    volumes: []
-    restart: always
-
   postgres:
     restart: always
+    ports: !reset []          # DB is internal only — never expose to host
 
   redis:
     restart: always
+    ports: !reset []          # Redis is internal only — never expose to host
     command: >
       redis-server
-      --maxmemory 512mb
+      --maxmemory 256mb
       --maxmemory-policy allkeys-lru
-      --requirepass ${REDIS_PASSWORD}
+      --requirepass ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env.production}
+
+  backend:
+    restart: always
+    build:
+      target: production      # non-root user, no --reload, COPY source into image
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2
+    volumes: !reset []        # image is self-contained — no live code mount
+    ports: !reset []          # only reachable via Nginx
+    environment:
+      ENVIRONMENT: production
+      DEBUG: "false"
+      DATABASE_URL: postgresql+asyncpg://ccblueprint:${POSTGRES_PASSWORD}@postgres:5432/ccblueprint
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+
+  worker:
+    restart: always
+    build:
+      target: production
+    command: celery -A app.celery_app worker --loglevel=warning --concurrency=2
+    volumes: !reset []
+    environment:
+      ENVIRONMENT: production
+      DEBUG: "false"
+      DATABASE_URL: postgresql+asyncpg://ccblueprint:${POSTGRES_PASSWORD}@postgres:5432/ccblueprint
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+
+  frontend:
+    restart: always
+    build:
+      target: production      # standalone Next.js, runs as node server.js
+      args:
+        NEXT_PUBLIC_API_URL:  ${SITE_URL}
+        NEXT_PUBLIC_SITE_URL: ${SITE_URL}
+    volumes: !reset []
+    ports: !reset []          # only reachable via Nginx
+    environment:
+      NEXT_PUBLIC_API_URL:  ${SITE_URL}
+      NEXT_PUBLIC_SITE_URL: ${SITE_URL}
 
   nginx:
     restart: always
-    # Mount SSL certs in production:
-    # volumes:
-    #   - ./ssl/cert.pem:/etc/nginx/ssl/cert.pem
-    #   - ./ssl/key.pem:/etc/nginx/ssl/key.pem
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro   # mounted read-only for Certbot certs

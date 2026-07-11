@@ -31,6 +31,11 @@ class ResendClient:
             return {"id": "dry_run"}
 
         # ── Real send ─────────────────────────────────────────────────────────
+        from_field = (
+            f"{settings.RESEND_FROM_NAME} <{from_email}>"
+            if settings.RESEND_FROM_NAME
+            else from_email
+        )
         try:
             response = httpx.post(
                 _RESEND_URL,
@@ -39,7 +44,7 @@ class ResendClient:
                     "Content-Type":  "application/json",
                 },
                 json={
-                    "from":    from_email,
+                    "from":    from_field,
                     "to":      [to],
                     "subject": subject,
                     "html":    html,
