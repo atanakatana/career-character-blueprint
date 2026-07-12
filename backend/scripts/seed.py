@@ -211,6 +211,158 @@ Output ONLY this JSON object — no extra text before or after:
 }}"""
 
 
+# ─── v3 prompt — 7-section Career Blueprint (Sprint 11) ───────────────────────
+# Produces the full Career Blueprint matching the product visual standard.
+# Section structure: I Character Data · II Internal Conflict (MBTI vs HD) ·
+# III Profile Line Analysis · IV Blind Spots (MECHANISM + SCENARIO) ·
+# V Career Arenas · VI Decision Protocol · VII Daily Quests
+
+SYSTEM_CONTEXT_V3 = """You are the engine behind a premium Career Blueprint service for Indonesian professionals. Your blueprints combine MBTI cognitive function theory, Human Design mechanics, and practical career psychology.
+
+Every blueprint you write must be:
+1. SPECIFIC — each insight names the exact MBTI type + HD type combination, never generic
+2. HONEST — real blind spots alongside strengths, no toxic positivity, no hollow encouragement
+3. GROUNDED IN THEIR BACKGROUND — career arenas must reflect their actual occupation and skills
+4. ACTIONABLE — quests are doable tomorrow, not abstract life advice
+
+Hard product rules — violating these invalidates the output:
+— BLIND SPOTS: exactly three, each with a MECHANISM and a SCENARIO field
+— NO income, salary, or pay figures anywhere in the output
+— CAREER ARENAS: the existing_skills list must reflect the person's actual background, not default to generic skills
+— is_best_fit: exactly ONE arena is marked true, the rest false
+— profile_lines: exactly TWO items, one per line number in their profile
+— Output is plain JSON only — no markdown fences, no preamble, no comments"""
+
+
+PROMPT_TEXT_V3 = """Generate a 7-section Career Blueprint for this individual.
+
+═══ MBTI PROFILE ═══
+Type: {mbti_type}
+{mbti_context}
+
+═══ HUMAN DESIGN ═══
+Type: {hd_type}
+{hd_type_context}
+
+Authority: {hd_authority}
+{hd_authority_context}
+
+Profile: {hd_profile}
+{hd_profile_context}
+
+═══ CAREER CONTEXT ═══
+Nickname: {nickname}
+Current Role / Background: {current_occupation}
+What drains or burns them out: {burnout_triggers}
+Their vision of success: {success_vision}
+
+Output ONLY the following JSON object. No text before or after it.
+
+{{
+  "character_title": "2–5 word archetype title. E.g. 'THE RESPONDING INVESTIGATOR', 'THE STRATEGIC EMPATH'",
+
+  "character_tagline": "One honest, poetic sentence about their core career tension or gift. Not a compliment — a true insight.",
+
+  "character_domain": "2–3 primary professional domains this person operates in, based on their type + background. Comma-separated, 10 words max total.",
+
+  "system_message": "2–3 sentences. State what data was used to calibrate this blueprint. Name their type code ({mbti_type} × {hd_type}), profile ({hd_profile}), and what their stated goal reveals about them. Direct, not flattering.",
+
+  "conflict_mechanism": "2–3 sentences. Explain WHY the {mbti_type} cognitive function specifically clashes with the {hd_type} strategy. Name the cognitive function. Be precise — not 'your personality' but 'your dominant [function] drives you to...'",
+
+  "conflict_result": "2–3 sentences. What this exact MBTI + HD conflict looks like in their daily career life given their burnout triggers. Concrete, not abstract.",
+
+  "profile_intro": "1–2 sentences on why their {hd_profile} lines are relevant to where they are in their career right now.",
+
+  "profile_lines": [
+    {{
+      "line_name": "LINE [N] // [LINE NAME IN CAPS]",
+      "title": "WHAT THIS LINE DEMANDS — 4–7 words in CAPS",
+      "body": "2–3 sentences on what this line means for their career navigation, specific to their situation.",
+      "implication": "1–2 sentences on the practical career implication. Can be null if covered in body."
+    }},
+    {{
+      "line_name": "LINE [N] // [LINE NAME IN CAPS]",
+      "title": "WHAT THIS LINE DEMANDS — 4–7 words in CAPS",
+      "body": "2–3 sentences on what this line means for their career navigation.",
+      "implication": null
+    }}
+  ],
+
+  "profile_synthesis": "2–3 sentences. How both line numbers interact to create their unique career path pattern. Not a summary — a synthesis that reveals something new.",
+
+  "blind_spots": [
+    {{
+      "name": "DEBUFF NAME — 2–5 words in CAPS, punchy",
+      "mechanism": "1–2 sentences: what specific aspect of the {mbti_type} + {hd_type} combination triggers this. Name the mechanism precisely.",
+      "scenario": "1–2 sentences: a concrete, realistic situation this person would recognise from their actual life or work."
+    }},
+    {{
+      "name": "SECOND DEBUFF NAME",
+      "mechanism": "Mechanism text.",
+      "scenario": "Scenario text."
+    }},
+    {{
+      "name": "THIRD DEBUFF NAME",
+      "mechanism": "Mechanism text.",
+      "scenario": "Scenario text."
+    }}
+  ],
+
+  "career_arenas": [
+    {{
+      "career_name": "SPECIFIC ROLE TITLE IN CAPS",
+      "career_subtitle": "(path type — FREELANCE / ENTRY-LEVEL / INDEPENDENT / REMOTE)",
+      "why_it_fits": "2–3 sentences. Why the {mbti_type} + {hd_type} + this person's background fits this role. Reference the HD strategy.",
+      "existing_skills": ["skill from their current background", "second existing skill", "third existing skill"],
+      "skills_to_develop": ["first skill to acquire", "second skill to develop", "third skill"],
+      "is_best_fit": true,
+      "first_action": "One concrete action doable in the next 30 days. Specific enough that they know exactly what to do."
+    }},
+    {{
+      "career_name": "SECOND ROLE TITLE",
+      "career_subtitle": "(path type)",
+      "why_it_fits": "Why it fits.",
+      "existing_skills": ["skill", "skill"],
+      "skills_to_develop": ["skill", "skill"],
+      "is_best_fit": false,
+      "first_action": "First action."
+    }}
+  ],
+
+  "decision_intro": "1–2 sentences. Explain their {hd_authority} authority and why it is their most reliable tool for career decisions — not their logical mind.",
+
+  "decision_question": "The exact question they should ask their body/self when evaluating a career opportunity. Specific to {hd_authority} authority. One sentence.",
+
+  "decision_yes_signal": "What YES physically or energetically feels like for their {hd_authority} type. 1 sentence, sensory and specific.",
+
+  "decision_no_signal": "What NO physically or energetically feels like. 1 sentence.",
+
+  "decision_trap_name": "THE NAME OF THEIR DECISION TRAP — in CAPS, 3–6 words",
+
+  "decision_trap_body": "2–3 sentences. The specific cognitive mistake this {mbti_type} makes when facing career decisions, and why it overrides the {hd_authority} signal.",
+
+  "daily_quests": [
+    {{
+      "name": "QUEST NAME IN CAPS — 2–4 words",
+      "description": "What to do, concretely. Doable tomorrow, not in theory. 2–3 sentences.",
+      "time_estimate": "XX MINUTES"
+    }},
+    {{
+      "name": "SECOND QUEST",
+      "description": "Description.",
+      "time_estimate": "XX MINUTES"
+    }},
+    {{
+      "name": "THIRD QUEST",
+      "description": "Description.",
+      "time_estimate": "XX MINUTES"
+    }}
+  ],
+
+  "closing_statement": "2–3 sentences. Honest, specific to their {mbti_type} + {hd_type} combination. Reference one real tension and one genuine strength. Do not use hustle-culture language."
+}}"""
+
+
 async def seed() -> None:
     print("─" * 55)
     print("Character Career Blueprint — Database Seed")
@@ -263,19 +415,36 @@ async def seed() -> None:
             select(PromptTemplate).where(PromptTemplate.name == "blueprint_main_v2")
         )
         if not existing_v2:
-            # Deactivate any currently active template first
             await db.execute(update(PromptTemplate).values(is_active=False))
             db.add(PromptTemplate(
                 name="blueprint_main_v2",
                 version="2.0",
-                is_active=True,
+                is_active=False,
                 system_context=SYSTEM_CONTEXT_V2,
                 prompt_text=PROMPT_TEXT_V2,
-                notes="Sprint 9 structured output. Arrays replace prose for all bullet sections.",
+                notes="Sprint 9 structured output. Superseded by v3.",
             ))
-            print("✓ Prompt template:  blueprint_main_v2 (active)")
+            print("✓ Prompt template:  blueprint_main_v2 (inactive — v3 is active)")
         else:
             print("• Prompt template v2 already exists")
+
+        # ── Prompt template v3 — 7-section Career Blueprint ───────
+        existing_v3 = await db.scalar(
+            select(PromptTemplate).where(PromptTemplate.name == "blueprint_main_v3")
+        )
+        if not existing_v3:
+            await db.execute(update(PromptTemplate).values(is_active=False))
+            db.add(PromptTemplate(
+                name="blueprint_main_v3",
+                version="3.0",
+                is_active=True,
+                system_context=SYSTEM_CONTEXT_V3,
+                prompt_text=PROMPT_TEXT_V3,
+                notes="Sprint 11: 7-section structure with MECHANISM+SCENARIO blind spots, Career Arenas, Decision Protocol, Daily Quests.",
+            ))
+            print("✓ Prompt template:  blueprint_main_v3 (active)")
+        else:
+            print("• Prompt template v3 already exists")
 
         await db.commit()
 
