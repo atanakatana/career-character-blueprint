@@ -6,6 +6,7 @@ import { logout } from '@/lib/adminApi'
 
 const NAV = [
   { href: '/admin/dashboard',   icon: '◈', label: 'DASHBOARD'   },
+  { href: '/admin/payments',    icon: '💳', label: 'PAYMENTS'   },
   { href: '/admin/submissions', icon: '📋', label: 'SUBMISSIONS' },
   { href: '/admin/models',      icon: '⚙',  label: 'AI MODELS'  },
   { href: '/admin/prompts',     icon: '📝', label: 'PROMPTS'    },

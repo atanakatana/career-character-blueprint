@@ -1,9 +1,11 @@
 import logging
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models.submission import Submission
+from app.models.payment import Payment
 from app.schemas.submission import SubmissionCreate, SubmissionResponse
 from app.celery_app import celery_app
 
@@ -27,7 +29,23 @@ async def create_submission(
     Returns 202 Accepted immediately — the blueprint is generated in the background
     and delivered via email when ready.
     """
-    # 1. Persist the submission
+    # ── 0. Verify payment ──────────────────────────────────────────────────
+    # The submission form is gated behind a Mayar.id payment.
+    # A valid paid payment must exist for this email before we accept a submission.
+    payment: Payment | None = await db.scalar(
+        select(Payment)
+        .where(Payment.email == data.email.lower().strip())
+        .where(Payment.status == "paid")
+        .order_by(Payment.paid_at.desc())
+        .limit(1)
+    )
+    if payment is None:
+        raise HTTPException(
+            status_code=status.HTTP_402_PAYMENT_REQUIRED,
+            detail="Payment required. Please complete payment at /pricing before submitting.",
+        )
+
+    # ── 1. Persist the submission ──────────────────────────────────────────
     submission = Submission(**data.model_dump())
     db.add(submission)
     await db.flush()  # Assign ID before referencing in task

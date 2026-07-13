@@ -46,6 +46,14 @@ class Settings(BaseSettings):
     MBTI_EXTERNAL_URL: str = "https://www.16personalities.com/"
     HD_EXTERNAL_URL: str = "https://www.jovianarchive.com/get_your_chart"
 
+    # ── Mayar.id Payment Gateway ────────────────────────────────────────────
+    MAYAR_API_KEY:    Optional[str] = None
+    MAYAR_PRODUCTION: bool          = False  # False = sandbox (api.mayar.club)
+
+    # Tier pricing in IDR
+    TIER1_PRICE: int = 149_000   # Career Blueprint only
+    TIER2_PRICE: int = 299_000   # Career Blueprint + Habit Tracker
+
     # ── CORS ───────────────────────────────────────────────────────────────
     ALLOWED_ORIGINS: list[str] = [
         "http://localhost:3000",

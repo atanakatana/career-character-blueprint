@@ -26,12 +26,15 @@ import { FORM_STEPS } from '@/lib/constants'
 
 const STEP_LABELS = FORM_STEPS.map(s => s.label)
 
-export function CharacterCreationForm() {
+export function CharacterCreationForm({ prefillEmail }: { prefillEmail?: string }) {
   const router = useRouter()
+  const [formData, setFormData] = useState<FormState>({
+    ...INITIAL_FORM_STATE,
+    ...(prefillEmail ? { email: prefillEmail } : {}),
+  })
 
   const [step,         setStep]         = useState(1)
   const [direction,    setDirection]    = useState<1 | -1>(1)
-  const [formData,     setFormData]     = useState<FormState>(INITIAL_FORM_STATE)
   const [errors,       setErrors]       = useState<FormErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError,  setSubmitError]  = useState<string | null>(null)
