@@ -14,16 +14,21 @@ class CareerRecommendation(BaseModel):
     future_growth_potential:  str
 
 
+class WorkEnvironment(BaseModel):
+    pros: list[str]
+    cons: list[str]
+
+
 class ReportData(BaseModel):
-    """Maps 1:1 to the JSONB report_data column schema."""
-    profile_summary:           str
-    capacity_and_energy:       str
-    blind_spots:               str
-    ideal_work_environment:    str
+    """Maps 1:1 to the JSONB report_data column schema (v2, v1-compatible)."""
+    profile_summary:           list[str] | str
+    capacity_and_energy:       list[str] | str
+    blind_spots:               list[str] | str
+    ideal_work_environment:    WorkEnvironment | str
     career_recommendations:    list[CareerRecommendation]
-    long_term_vision:          str
-    skill_development_roadmap: str
-    decision_making_guide:     str
+    long_term_vision:          list[str] | str
+    skill_development_roadmap: list[str] | str
+    decision_making_guide:     list[str] | str
     action_plan:               list[str]
     closing_statement:         str
 
