@@ -1,52 +1,110 @@
 from pydantic import BaseModel, Field
+from typing import Optional
 
 
-class CareerRecommendation(BaseModel):
-    career_name:             str       = Field(..., min_length=1)
-    why_it_fits:             str       = Field(..., min_length=10)
-    required_skills:         list[str] = Field(..., min_length=1)
-    first_action:            str       = Field(..., min_length=10)
-    estimated_income_range:  str       = Field(..., min_length=1)
-    future_growth_potential: str       = Field(..., min_length=10)
+# ── v3 sub-schemas ─────────────────────────────────────────────────────────
+
+class ProfileLine(BaseModel):
+    """One line from the person's Human Design profile (e.g. Line 3 / Martyr)."""
+    line_name:   str            = Field(..., min_length=1)   # "LINE 3 // MARTYR"
+    title:       str            = Field(..., min_length=1)   # "LEARN THROUGH TRIAL AND ERROR"
+    body:        str            = Field(..., min_length=20)
+    implication: Optional[str]  = None                       # optional practical note
 
 
-class WorkEnvironment(BaseModel):
-    """v2 structured environment — explicit pros/cons lists instead of prose."""
-    pros: list[str] = Field(..., min_length=2, max_length=6)
-    cons: list[str] = Field(..., min_length=1, max_length=4)
+class BlindSpot(BaseModel):
+    """
+    Shadow stat in MECHANISM + SCENARIO format.
+    Exactly three per reading — product rule.
+    """
+    name:      str = Field(..., min_length=3)   # "IDEA BURNOUT"
+    mechanism: str = Field(..., min_length=20)  # what triggers it
+    scenario:  str = Field(..., min_length=20)  # concrete workplace scenario
 
+
+class CareerArena(BaseModel):
+    """
+    Career path recommendation.
+    No income/salary figures — product rule.
+    Existing skills must reflect the person's actual background.
+    """
+    career_name:        str       = Field(..., min_length=1)
+    career_subtitle:    str       = Field(default="")          # "(FREELANCE / ENTRY-LEVEL)"
+    why_it_fits:        str       = Field(..., min_length=20)
+    existing_skills:    list[str] = Field(..., min_length=2, max_length=5)
+    skills_to_develop:  list[str] = Field(..., min_length=2, max_length=5)
+    is_best_fit:        bool      = False                      # exactly one True per reading
+    first_action:       str       = Field(..., min_length=10)
+
+
+class DailyQuest(BaseModel):
+    """Immediately actionable quest — doable tomorrow, not abstract."""
+    name:          str = Field(..., min_length=2)
+    description:   str = Field(..., min_length=20)
+    time_estimate: str = Field(..., min_length=2)   # "20 MINUTES"
+
+
+# ── v3 main schema ─────────────────────────────────────────────────────────
 
 class AIOutput(BaseModel):
     """
-    v2 schema — structured arrays replace prose strings wherever the UI
-    renders bullet points.  closing_statement stays as prose (it is a
-    paragraph-length sign-off, not a list).
+    v3 schema — 7-section Career Blueprint structure matching the product standard.
 
-    Fields stored in the report_data JSONB column:
-      profile_summary, capacity_and_energy, blind_spots,
-      ideal_work_environment, career_recommendations,
-      long_term_vision, skill_development_roadmap,
-      decision_making_guide, action_plan, closing_statement
+    Sections:
+      I   Character Data        → character_title, character_tagline,
+                                  character_domain, system_message
+      II  Internal Conflict     → conflict_mechanism, conflict_result
+                                  (VS battle items are computed on the frontend)
+      III Profile Line Analysis → profile_intro, profile_lines, profile_synthesis
+      IV  Blind Spots           → blind_spots (MECHANISM + SCENARIO × 3)
+      V   Career Arenas         → career_arenas
+      VI  Decision Protocol     → decision_* fields
+      VII Daily Quests          → daily_quests
+          Closing               → closing_statement
 
-    character_title is stored as a separate DB column and excluded from
-    report_data via to_report_data().
+    character_title is stored as a separate DB column.
+    Everything else is stored in report_data JSONB.
+    Presence of 'system_message' in report_data identifies a v3 report.
     """
 
-    character_title:           str                        = Field(..., min_length=1,  max_length=255)
+    # ── Cover / hero ──────────────────────────────────────────────────────
+    character_title:   str = Field(..., min_length=1, max_length=255)
+    character_tagline: str = Field(..., min_length=10)
 
-    # ── v2: short-phrase arrays ───────────────────────────────────────────────
-    profile_summary:           list[str]                  = Field(..., min_length=3,  max_length=5)
-    capacity_and_energy:       list[str]                  = Field(..., min_length=2,  max_length=5)
-    blind_spots:               list[str]                  = Field(..., min_length=2,  max_length=5)
-    ideal_work_environment:    WorkEnvironment
-    long_term_vision:          list[str]                  = Field(..., min_length=3,  max_length=5)
-    skill_development_roadmap: list[str]                  = Field(..., min_length=3,  max_length=6)
-    decision_making_guide:     list[str]                  = Field(..., min_length=3,  max_length=6)
+    # ── Section I: Character Data ─────────────────────────────────────────
+    character_domain:  str = Field(..., min_length=5)
+    system_message:    str = Field(..., min_length=20)  # ← v3 marker field
 
-    # ── unchanged from v1 ────────────────────────────────────────────────────
-    career_recommendations:    list[CareerRecommendation] = Field(..., min_length=2,  max_length=5)
-    action_plan:               list[str]                  = Field(..., min_length=3,  max_length=10)
-    closing_statement:         str                        = Field(..., min_length=20)
+    # ── Section II: Internal Conflict ─────────────────────────────────────
+    # VS battle items (left/right columns) are computed on the frontend.
+    # AI generates the surrounding analysis.
+    conflict_mechanism: str = Field(..., min_length=30)
+    conflict_result:    str = Field(..., min_length=30)
+
+    # ── Section III: Profile Line Analysis ───────────────────────────────
+    profile_intro:     str              = Field(..., min_length=20)
+    profile_lines:     list[ProfileLine] = Field(..., min_length=2, max_length=2)
+    profile_synthesis: str              = Field(..., min_length=20)
+
+    # ── Section IV: Blind Spots ───────────────────────────────────────────
+    blind_spots: list[BlindSpot] = Field(..., min_length=3, max_length=3)
+
+    # ── Section V: Career Arenas ──────────────────────────────────────────
+    career_arenas: list[CareerArena] = Field(..., min_length=2, max_length=5)
+
+    # ── Section VI: Decision Protocol ────────────────────────────────────
+    decision_intro:       str = Field(..., min_length=20)
+    decision_question:    str = Field(..., min_length=10)
+    decision_yes_signal:  str = Field(..., min_length=5)
+    decision_no_signal:   str = Field(..., min_length=5)
+    decision_trap_name:   str = Field(..., min_length=3)
+    decision_trap_body:   str = Field(..., min_length=20)
+
+    # ── Section VII: Daily Quests ─────────────────────────────────────────
+    daily_quests: list[DailyQuest] = Field(..., min_length=3, max_length=5)
+
+    # ── Closing ───────────────────────────────────────────────────────────
+    closing_statement: str = Field(..., min_length=20)
 
     def to_report_data(self) -> dict:
         """Returns the JSONB-storable dict, excluding character_title."""
