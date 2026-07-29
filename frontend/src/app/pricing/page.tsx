@@ -133,7 +133,7 @@ export default function PricingPage() {
               style={{ boxShadow: '4px 4px 0px rgba(0,0,0,0.7)' }}
               onClick={() => setSelectedTier(selectedTier === tier.id ? null : tier.id)}
             >
-              {tier.recommended && (
+              {'recommended' in tier && tier.recommended && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-pixel-blue text-white font-press text-xs px-3 py-1 whitespace-nowrap">
                   ★ RECOMMENDED
                 </div>

@@ -1,311 +1,290 @@
 'use client'
 
-import Link from 'next/link'
-import { PixelButton } from '@/components/ui/PixelButton'
-import { PixelPanel } from '@/components/ui/PixelPanel'
-import { AnimatedSection } from '@/components/ui/AnimatedSection'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useRouter } from 'next/navigation'
+import { AnimatedCounter, MagneticButton } from '@/components/ui/motion'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
+import { fadeUp, wipeUp, VIEWPORT, EASE_OUT_EXPO } from '@/lib/motion'
 
-// ── Mock report content ───────────────────────────────────────────────────────
-const MOCK = {
-  characterTitle: 'The Empathic Architect',
-  mbti:      'INFJ',
-  hdType:    'Generator',
-  hdProfile: '3/5 Profile',
-  hdAuth:    'Sacral Authority',
-
-  profileSummary: `You hold a rare combination of deep strategic insight and genuine empathy — the kind that lets you build systems that actually serve people. Your Generator energy is most alive when responding to work that truly resonates: not initiating blindly, but waiting for the pull that feels right, then committing completely. The 3/5 profile means your real wisdom comes from lived experience and trial, not theory. You have a Martyr's resilience and a Heretic's magnetism — people look to you for solutions to problems they can't solve themselves. Your work needs to be meaningful or it will drain you, not grow you.`,
-
-  careers: [
-    {
-      name:        'UX Research Lead',
-      fit:         96,
-      fitColor:    'bg-pixel-green',
-      why:         'Your INFJ pattern-recognition and genuine user empathy make you exceptional at surfacing insight others miss. Generator energy means sustained deep work comes naturally when the problem matters.',
-      firstAction: "Complete the Google UX Research Certificate or Nielsen Norman Group's UX Research program.",
-      income:      'Rp 18M – 40M / month',
-      growth:      'High — demand accelerating across tech and product-led companies',
-      visible:     true,
-    },
-    {
-      name:        'Organisational Development Consultant',
-      fit:         91,
-      fitColor:    'bg-pixel-blue',
-      why:         '',
-      firstAction: '',
-      income:      '',
-      growth:      '',
-      visible:     false,
-    },
-    {
-      name:        'Product Strategy Manager',
-      fit:         88,
-      fitColor:    'bg-pixel-gold',
-      why:         '',
-      firstAction: '',
-      income:      '',
-      growth:      '',
-      visible:     false,
-    },
-  ],
-}
-
-const SIDEBAR_SECTIONS = [
-  { id: '01', label: 'Profile Summary',       active: true,  locked: false },
-  { id: '02', label: 'Capacity & Energy',     active: false, locked: false },
-  { id: '03', label: 'Blind Spots',           active: false, locked: true  },
-  { id: '04', label: 'Ideal Environment',     active: false, locked: true  },
-  { id: '05', label: 'Career Paths',          active: false, locked: false },
-  { id: '06', label: 'Long-Term Vision',      active: false, locked: true  },
-  { id: '07', label: 'Skill Roadmap',         active: false, locked: true  },
-  { id: '08', label: 'Decision Guide',        active: false, locked: true  },
-  { id: '09', label: 'Action Plan',           active: false, locked: true  },
-  { id: '10', label: 'Closing Statement',     active: false, locked: true  },
+// ── Mock report data ──────────────────────────────────────────────────────────
+const STRENGTHS = [
+  { label: 'Strategy',      v: 92 },
+  { label: 'Empathy',       v: 88 },
+  { label: 'Execution',     v: 74 },
+  { label: 'Vision',        v: 95 },
+  { label: 'Communication', v: 81 },
+  { label: 'Resilience',    v: 79 },
 ]
 
+const CAREERS = [
+  { name: 'UX Research Lead',                  fit: 96, color: 'bg-pixel-green', income: 'Rp 18M – 40M / mo' },
+  { name: 'Org Development Consultant',        fit: 91, color: 'bg-pixel-blue',  income: 'Rp 20M – 45M / mo' },
+  { name: 'Product Strategy Manager',          fit: 88, color: 'bg-pixel-gold',  income: 'Rp 22M – 50M / mo' },
+]
+
+const GROWTH = [
+  { when: 'Now',      title: 'Anchor your niche',   note: 'Lead with pattern-recognition + empathy in research.' },
+  { when: '1–2 yrs',  title: 'Own the craft',       note: 'Ship a portfolio of insight work; build authority.' },
+  { when: '3–5 yrs',  title: 'Shape the system',    note: 'Move from practitioner to strategist / team builder.' },
+]
+
+const TABS = ['Profile', 'Career Paths', 'Future Growth'] as const
+type Tab = typeof TABS[number]
+
 export function BlueprintPreviewSection() {
+  const reduced = usePrefersReducedMotion()
+  const router = useRouter()
+  const [tab, setTab] = useState<Tab>('Profile')
+
   return (
-    <section className="py-24 px-4 sm:px-6">
-      <div className="max-w-6xl mx-auto space-y-8">
-
-        {/* Section header */}
-        <AnimatedSection className="text-center">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="pixel-divider flex-1" />
-            <span className="font-press text-press-xs text-pixel-gold whitespace-nowrap">
-              EXAMPLE BLUEPRINT
-            </span>
-            <div className="pixel-divider flex-1" />
+    <section id="example-blueprint" className="relative px-4 py-28 sm:px-6" aria-label="Example blueprint">
+      <div className="mx-auto max-w-6xl">
+        <motion.div className="mb-12 text-center" variants={fadeUp} initial="hidden" whileInView="visible" viewport={VIEWPORT}>
+          <div className="mb-4 flex items-center justify-center gap-4">
+            <span className="h-px w-12 bg-pixel-border" />
+            <span className="font-press text-press-xs text-pixel-gold">EXAMPLE BLUEPRINT</span>
+            <span className="h-px w-12 bg-pixel-border" />
           </div>
-          <h2 className="font-pixel text-2xl sm:text-3xl text-pixel-text">
-            This is what you'll receive
+          <h2 className="font-pixel text-3xl text-pixel-text sm:text-4xl">
+            This is what you&apos;ll <span className="fx-gradient-text">receive</span>
           </h2>
-          <p className="font-body text-sm text-pixel-muted mt-3 max-w-lg mx-auto">
-            A full codex built from your actual inputs. The sample below shows real report 
-            content — the rest is revealed only in yours.
+          <p className="mx-auto mt-4 max-w-lg font-body text-sm text-pixel-muted">
+            A living codex built from your real inputs. Explore the sample below — click through the tabs.
           </p>
-        </AnimatedSection>
+        </motion.div>
 
-        {/* Codex preview frame */}
-        <AnimatedSection delay={0.1}>
-          <div className="pixel-panel overflow-hidden">
+        <motion.div variants={wipeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-8%' }}>
+          <div className="fx-conic-border">
+            <div className="pixel-panel overflow-hidden">
 
-            {/* Codex header bar */}
-            <div className="bg-pixel-bg border-b-2 border-pixel-gold px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <span className="font-press text-[0.4rem] text-pixel-gold">◆ CAREER CODEX</span>
-                <span className="hidden sm:inline pixel-divider-subtle w-px h-4 mx-0 my-0 inline-block" />
-                <span className="hidden sm:inline font-press text-[0.38rem] text-pixel-muted">
-                  PERSONAL CAREER BLUEPRINT
-                </span>
+              {/* Header bar */}
+              <div className="flex items-center justify-between gap-4 border-b-2 border-pixel-gold bg-pixel-bg px-4 py-3 sm:px-6">
+                <div className="flex items-center gap-3">
+                  <span className="font-press text-[0.4rem] text-pixel-gold">◆ CAREER CODEX</span>
+                  <span className="hidden font-press text-[0.36rem] text-pixel-muted sm:inline">PERSONAL BLUEPRINT</span>
+                </div>
+                <span className="pixel-tag">SAMPLE</span>
               </div>
-              <span className="pixel-tag">SAMPLE REPORT</span>
-            </div>
 
-            {/* Character title bar */}
-            <div className="bg-pixel-panel/60 border-b border-pixel-border px-4 sm:px-6 py-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              {/* Character title + score */}
+              <div className="grid grid-cols-1 gap-4 border-b border-pixel-border bg-pixel-panel/50 px-4 py-5 sm:grid-cols-[1fr_auto] sm:items-center sm:px-6">
                 <div>
-                  <p className="font-press text-[0.38rem] text-pixel-muted mb-1">CHARACTER CLASS</p>
-                  <h3 className="font-pixel text-2xl sm:text-3xl text-pixel-gold">
-                    {MOCK.characterTitle}
-                  </h3>
+                  <p className="font-press text-[0.36rem] uppercase tracking-widest text-pixel-muted">Character Class</p>
+                  <h3 className="mt-1 font-pixel text-2xl text-pixel-gold sm:text-3xl">The Empathic Architect</h3>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <span className="pixel-tag">INFJ</span>
+                    <span className="pixel-tag-blue">Generator</span>
+                    <span className="pixel-tag-muted">3/5 · Sacral</span>
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  <span className="pixel-tag">{MOCK.mbti}</span>
-                  <span className="pixel-tag-blue">{MOCK.hdType}</span>
-                  <span className="pixel-tag-muted">{MOCK.hdProfile}</span>
-                  <span className="pixel-tag-muted">{MOCK.hdAuth}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Main codex body */}
-            <div className="flex flex-col lg:flex-row min-h-0">
-
-              {/* Sidebar navigation (desktop) */}
-              <div className="hidden lg:block w-52 flex-shrink-0 border-r border-pixel-border bg-pixel-bg/40">
-                <div className="p-3">
-                  <p className="font-press text-[0.35rem] text-pixel-muted mb-3 uppercase tracking-widest px-1">
-                    Sections
-                  </p>
-                  {SIDEBAR_SECTIONS.map((s) => (
-                    <div
-                      key={s.id}
-                      className={`
-                        flex items-center gap-2 px-2 py-2 mb-0.5 font-press text-[0.38rem] leading-tight
-                        ${s.active
-                          ? 'bg-pixel-gold/10 border-l-2 border-pixel-gold text-pixel-gold'
-                          : 'text-pixel-muted border-l-2 border-transparent'
-                        }
-                      `}
-                    >
-                      <span className="text-[0.32rem] opacity-60">{s.id}</span>
-                      <span className="flex-1">{s.label}</span>
-                      {s.locked && (
-                        <span className="text-[0.32rem] opacity-50">🔒</span>
-                      )}
-                    </div>
-                  ))}
+                {/* Career score dial */}
+                <div className="flex items-center gap-3 sm:flex-col sm:items-end">
+                  <div className="text-right">
+                    <p className="font-press text-[0.34rem] uppercase tracking-widest text-pixel-muted">Career Score</p>
+                    <p className="font-pixel text-4xl text-pixel-green leading-none">
+                      <AnimatedCounter to={94} />
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Content area */}
-              <div className="flex-1 p-4 sm:p-6 space-y-8 overflow-hidden">
+              {/* Body: radar + tabbed content */}
+              <div className="grid grid-cols-1 gap-0 lg:grid-cols-[300px_1fr]">
 
-                {/* Section 01: Profile Summary */}
-                <ReportSection number="01" title="Profile Summary">
-                  <p className="font-body text-sm text-pixel-muted leading-relaxed">
-                    {MOCK.profileSummary}
-                  </p>
-                </ReportSection>
-
-                {/* Section 05: Career Paths */}
-                <ReportSection number="05" title="Career Paths">
-                  <div className="space-y-4">
-                    {MOCK.careers.map((career, i) => (
-                      career.visible ? (
-                        <VisibleCareerCard key={i} career={career} rank={i + 1} />
-                      ) : (
-                        <LockedCareerCard key={i} career={career} rank={i + 1} />
-                      )
+                {/* Radar panel */}
+                <div className="border-b border-pixel-border p-5 lg:border-b-0 lg:border-r">
+                  <p className="mb-3 font-press text-[0.38rem] uppercase tracking-widest text-pixel-muted">Strength Radar</p>
+                  <StrengthRadar reduced={reduced} />
+                  <div className="mt-4 grid grid-cols-2 gap-1.5">
+                    {STRENGTHS.map((s) => (
+                      <div key={s.label} className="flex items-center justify-between border border-pixel-border px-2 py-1">
+                        <span className="font-press text-[0.32rem] text-pixel-muted">{s.label}</span>
+                        <span className="font-press text-[0.32rem] text-pixel-gold">{s.v}</span>
+                      </div>
                     ))}
                   </div>
-                </ReportSection>
+                </div>
 
-                {/* Locked section teaser */}
-                <div className="border border-pixel-border bg-pixel-bg/40 p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-press text-[0.4rem] text-pixel-muted">
-                        + 8 more sections in your full blueprint
-                      </p>
-                      <p className="font-body text-xs text-pixel-muted mt-1">
-                        Decision guide · Action plan · Skill roadmap · Long-term vision · and more
-                      </p>
-                    </div>
-                    <span className="text-pixel-muted font-vt text-vt-xl opacity-30">🔒</span>
+                {/* Tabbed content */}
+                <div className="p-5 sm:p-6">
+                  {/* Tabs */}
+                  <div className="mb-5 flex gap-1 border-b border-pixel-border" role="tablist" aria-label="Blueprint sections">
+                    {TABS.map((t) => (
+                      <button
+                        key={t}
+                        role="tab"
+                        aria-selected={tab === t}
+                        onClick={() => setTab(t)}
+                        className={`relative px-3 py-2 font-press text-[0.4rem] transition-colors ${tab === t ? 'text-pixel-gold' : 'text-pixel-muted hover:text-pixel-text'}`}
+                      >
+                        {t}
+                        {tab === t && (
+                          <motion.span layoutId="tab-underline" className="absolute inset-x-0 -bottom-px h-0.5 bg-pixel-gold" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={tab}
+                      initial={{ opacity: 0, y: reduced ? 0 : 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: reduced ? 0 : -10 }}
+                      transition={{ duration: 0.3, ease: EASE_OUT_EXPO }}
+                    >
+                      {tab === 'Profile' && (
+                        <div>
+                          <SectionLabel n="01" title="Profile Summary" />
+                          <p className="font-body text-sm leading-relaxed text-pixel-muted">
+                            You hold a rare pairing of deep strategic insight and genuine empathy — the kind
+                            that builds systems that actually serve people. Your Generator energy comes alive
+                            responding to work that resonates, not initiating blindly. The 3/5 profile means
+                            your wisdom is earned through lived experience: a Martyr&apos;s resilience with a
+                            Heretic&apos;s magnetism. Work must feel meaningful, or it drains rather than grows you.
+                          </p>
+                        </div>
+                      )}
+
+                      {tab === 'Career Paths' && (
+                        <div>
+                          <SectionLabel n="05" title="Career Recommendations" />
+                          <div className="space-y-3">
+                            {CAREERS.map((c, i) => (
+                              <div key={c.name} className="pixel-panel-subtle p-3">
+                                <div className="flex items-center justify-between gap-3">
+                                  <span className="font-press text-[0.4rem] text-pixel-gold">#{i + 1} {c.name}</span>
+                                  <span className="font-press text-[0.36rem] text-pixel-green">{c.fit}% FIT</span>
+                                </div>
+                                <div className="mt-2 h-1.5 overflow-hidden border border-pixel-border bg-pixel-bg">
+                                  <motion.div className={`h-full ${c.color}`}
+                                    initial={{ width: 0 }} animate={{ width: `${c.fit}%` }}
+                                    transition={{ duration: 0.9, delay: i * 0.1, ease: EASE_OUT_EXPO }} />
+                                </div>
+                                <p className="mt-2 font-press text-[0.34rem] text-pixel-muted">{c.income}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {tab === 'Future Growth' && (
+                        <div>
+                          <SectionLabel n="06" title="Long-Term Vision" />
+                          <div className="space-y-3">
+                            {GROWTH.map((g, i) => (
+                              <div key={g.when} className="flex gap-3">
+                                <div className="flex flex-col items-center">
+                                  <span className="flex h-6 w-6 items-center justify-center border border-pixel-gold font-press text-[0.32rem] text-pixel-gold">{i + 1}</span>
+                                  {i < GROWTH.length - 1 && <span className="mt-1 w-px flex-1 bg-pixel-border" />}
+                                </div>
+                                <div className="pb-1">
+                                  <span className="font-press text-[0.34rem] text-pixel-blue">{g.when}</span>
+                                  <p className="font-press text-[0.4rem] text-pixel-text">{g.title}</p>
+                                  <p className="mt-1 font-body text-xs text-pixel-muted">{g.note}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </motion.div>
+                  </AnimatePresence>
+
+                  {/* locked teaser */}
+                  <div className="mt-6 flex items-center justify-between border border-pixel-border bg-pixel-bg/40 p-3">
+                    <p className="font-press text-[0.38rem] text-pixel-muted">+ 7 more sections in your full blueprint</p>
+                    <span className="font-vt text-vt-lg opacity-30">🔒</span>
                   </div>
                 </div>
-
-                {/* In-preview CTA */}
-                <div className="pt-2 text-center">
-                  <Link href="/create">
-                    <PixelButton variant="primary" size="lg">
-                      ▶&nbsp; Generate My Blueprint
-                    </PixelButton>
-                  </Link>
-                  <p className="font-press text-[0.4rem] text-pixel-muted mt-3">
-                    Free · 5 min · Delivered to your email
-                  </p>
-                </div>
-
               </div>
+
+              {/* CTA footer */}
+              <div className="border-t border-pixel-border bg-pixel-bg/40 px-4 py-6 text-center sm:px-6">
+                <MagneticButton
+                  onClick={() => router.push('/create')}
+                  aria-label="Generate my blueprint"
+                  className="pixel-btn-primary px-7 py-3.5 text-press-sm"
+                >
+                  <span className="inline-flex items-center gap-2">▶ Generate My Blueprint</span>
+                </MagneticButton>
+                <p className="mt-3 font-press text-[0.38rem] text-pixel-muted">9 questions · Delivered to your email</p>
+              </div>
+
             </div>
-
           </div>
-        </AnimatedSection>
-
+        </motion.div>
       </div>
     </section>
   )
 }
 
-// ── Sub-components ─────────────────────────────────────────────────────────────
-function ReportSection({ number, title, children }: { number: string; title: string; children: React.ReactNode }) {
+function SectionLabel({ n, title }: { n: string; title: string }) {
   return (
-    <div>
-      <div className="flex items-center gap-3 mb-4">
-        <span className="font-press text-[0.38rem] text-pixel-gold bg-pixel-gold/10 border border-pixel-gold/30 px-2 py-1">
-          {number}
-        </span>
-        <span className="font-press text-press-xs text-pixel-text">{title}</span>
-        <div className="flex-1 h-px bg-pixel-border" />
-      </div>
-      {children}
+    <div className="mb-4 flex items-center gap-3">
+      <span className="border border-pixel-gold/30 bg-pixel-gold/10 px-2 py-1 font-press text-[0.36rem] text-pixel-gold">{n}</span>
+      <span className="font-press text-press-xs text-pixel-text">{title}</span>
+      <span className="h-px flex-1 bg-pixel-border" />
     </div>
   )
 }
 
-function VisibleCareerCard({ career, rank }: { career: typeof MOCK.careers[0]; rank: number }) {
+// ── Animated hexagonal strength radar (pure SVG) ──────────────────────────────
+function StrengthRadar({ reduced }: { reduced: boolean }) {
+  const cx = 100, cy = 100, R = 78
+  const n = STRENGTHS.length
+  const angle = (i: number) => (-90 + (360 / n) * i) * (Math.PI / 180)
+  const pt = (i: number, r: number) => [cx + r * Math.cos(angle(i)), cy + r * Math.sin(angle(i))]
+
+  const rings = [0.25, 0.5, 0.75, 1]
+  const ringPoints = (f: number) => STRENGTHS.map((_, i) => pt(i, R * f).map((v) => v.toFixed(1)).join(',')).join(' ')
+  const dataPoints = STRENGTHS.map((s, i) => pt(i, R * (s.v / 100)).map((v) => v.toFixed(1)).join(',')).join(' ')
+
   return (
-    <PixelPanel variant="subtle" padding="sm" className="space-y-3">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <span className="font-press text-[0.38rem] text-pixel-muted">#{rank}</span>
-          <span className="font-press text-press-xs text-pixel-gold">{career.name}</span>
-        </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <div className="w-16 h-1.5 bg-pixel-bg border border-pixel-border overflow-hidden">
-            <div className={`h-full ${career.fitColor}`} style={{ width: `${career.fit}%` }} />
-          </div>
-          <span className="font-press text-[0.38rem] text-pixel-gold">{career.fit}%</span>
-          <span className="pixel-tag-green text-[0.36rem]">FIT</span>
-        </div>
-      </div>
-
-      {/* Details */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-        <div>
-          <p className="font-press text-[0.36rem] text-pixel-muted mb-1 uppercase">Why it fits</p>
-          <p className="font-body text-xs text-pixel-muted leading-relaxed">{career.why}</p>
-        </div>
-        <div className="space-y-2">
-          <div>
-            <p className="font-press text-[0.36rem] text-pixel-muted mb-1 uppercase">First action</p>
-            <p className="font-body text-xs text-pixel-muted">{career.firstAction}</p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <div>
-              <p className="font-press text-[0.36rem] text-pixel-muted mb-0.5">Income</p>
-              <p className="font-press text-[0.38rem] text-pixel-green">{career.income}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </PixelPanel>
-  )
-}
-
-function LockedCareerCard({ career, rank }: { career: typeof MOCK.careers[0]; rank: number }) {
-  return (
-    <div className="border border-pixel-border bg-pixel-bg/30 p-3">
-      {/* Header — blurred */}
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <span className="font-press text-[0.38rem] text-pixel-muted">#{rank}</span>
-          <span
-            className="font-press text-press-xs text-pixel-text"
-            style={{ filter: 'blur(6px)', userSelect: 'none' }}
-          >
-            {career.name}
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5 flex-shrink-0">
-          <div className="w-16 h-1.5 bg-pixel-bg border border-pixel-border overflow-hidden">
-            <div
-              className={`h-full ${career.fitColor} opacity-40`}
-              style={{ width: `${career.fit}%`, filter: 'blur(2px)' }}
-            />
-          </div>
-          <span
-            className="font-press text-[0.38rem] text-pixel-muted"
-            style={{ filter: 'blur(4px)', userSelect: 'none' }}
-          >
-            {career.fit}%
-          </span>
-          <span className="pixel-tag-muted text-[0.36rem]">FIT</span>
-        </div>
-      </div>
-
-      {/* Content — blurred */}
-      <div style={{ filter: 'blur(5px)', userSelect: 'none', pointerEvents: 'none' }}>
-        <p className="font-body text-xs text-pixel-muted leading-relaxed">
-          Your unique combination of strategic thinking and empathic communication positions
-          you exceptionally well for this role. The career path rewards depth and long-term
-          relationship building — both of which come naturally from your design.
-        </p>
-      </div>
-    </div>
+    <svg viewBox="0 0 200 200" className="mx-auto w-full max-w-[240px]" role="img" aria-label="Strength radar chart">
+      {/* rings */}
+      {rings.map((f, i) => (
+        <polygon key={i} points={ringPoints(f)} fill="none" stroke="#2E3B52" strokeWidth="1" />
+      ))}
+      {/* spokes */}
+      {STRENGTHS.map((_, i) => {
+        const [x, y] = pt(i, R)
+        return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke="#2E3B52" strokeWidth="1" />
+      })}
+      {/* data polygon */}
+      <motion.polygon
+        points={dataPoints}
+        fill="rgba(245,197,66,0.18)"
+        stroke="#F5C542"
+        strokeWidth="2"
+        initial={reduced ? false : { scale: 0, opacity: 0 }}
+        whileInView={reduced ? undefined : { scale: 1, opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.9, ease: EASE_OUT_EXPO }}
+        style={{ transformOrigin: '100px 100px' }}
+      />
+      {/* vertices */}
+      {STRENGTHS.map((s, i) => {
+        const [x, y] = pt(i, R * (s.v / 100))
+        return (
+          <motion.rect key={i} x={Number(x) - 2.5} y={Number(y) - 2.5} width="5" height="5" fill="#F5C542"
+            initial={reduced ? false : { opacity: 0 }}
+            whileInView={reduced ? undefined : { opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5 + i * 0.06 }} />
+        )
+      })}
+      {/* labels */}
+      {STRENGTHS.map((s, i) => {
+        const [x, y] = pt(i, R + 14)
+        return (
+          <text key={i} x={x} y={y} fill="#8892A4" fontSize="7" textAnchor="middle" dominantBaseline="middle"
+                style={{ fontFamily: 'var(--font-press), monospace' }}>
+            {s.label.slice(0, 6)}
+          </text>
+        )
+      })}
+    </svg>
   )
 }

@@ -1,22 +1,24 @@
 import type { Metadata } from 'next'
-import { PixelLayout }             from '@/components/layout/PixelLayout'
-import { HeroSection }             from '@/components/landing/HeroSection'
-import { HowItWorksSection }       from '@/components/landing/HowItWorksSection'
-import { BenefitsSection }         from '@/components/landing/BenefitsSection'
-import { BlueprintPreviewSection } from '@/components/landing/BlueprintPreviewSection'
-import { CtaSection }              from '@/components/landing/CtaSection'
+import { PixelLayout }                from '@/components/layout/PixelLayout'
+import { ScrollProgress }             from '@/components/ui/motion'
+import { HeroSection }                from '@/components/landing/HeroSection'
+import { HowItWorksSection }          from '@/components/landing/HowItWorksSection'
+import { FeaturesSection }            from '@/components/landing/FeaturesSection'
+import { PredictionProcessSection }   from '@/components/landing/PredictionProcessSection'
+import { BlueprintPreviewSection }    from '@/components/landing/BlueprintPreviewSection'
+import { PricingSection }             from '@/components/landing/PricingSection'
+import { FaqSection }                 from '@/components/landing/FaqSection'
 
 export const metadata: Metadata = {
   title: 'Character Career Blueprint | AI-Powered Career Guidance',
   description:
-    'Discover your personalized career path through AI-powered guidance combining ' +
-    'MBTI, Human Design, and career psychology. Free. 5 minutes. Delivered to your inbox.',
-  keywords: ['career guidance', 'MBTI career', 'Human Design career', 'AI career blueprint'],
+    'Discover your Career Character Blueprint — a cinematic, AI-powered career identity ' +
+    'built from your MBTI type and Human Design. 9 questions, delivered to your inbox.',
+  keywords: ['career guidance', 'MBTI career', 'Human Design career', 'AI career blueprint', 'career identity'],
   openGraph: {
-    title: 'Character Career Blueprint',
+    title: 'Discover Your Career Character Blueprint',
     description:
-      'A 10-section personalized career report built from your MBTI type, ' +
-      'Human Design, and career context.',
+      'A 10-section personalized career codex built from your MBTI type, Human Design, and AI synthesis.',
     type: 'website',
   },
 }
@@ -24,11 +26,16 @@ export const metadata: Metadata = {
 export default function LandingPage() {
   return (
     <PixelLayout>
+      {/* Reading-progress bar spanning the whole scroll journey */}
+      <ScrollProgress />
+
       <HeroSection />
       <HowItWorksSection />
-      <BenefitsSection />
+      <FeaturesSection />
+      <PredictionProcessSection />
       <BlueprintPreviewSection />
-      <CtaSection />
+      <PricingSection />
+      <FaqSection />
     </PixelLayout>
   )
 }
