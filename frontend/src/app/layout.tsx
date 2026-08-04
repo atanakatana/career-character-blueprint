@@ -36,36 +36,36 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost'
 
 const DESCRIPTION =
   'Discover your personalized career path through AI-powered guidance ' +
-  'combining MBTI, Human Design, and career psychology. Get your Career Blueprint delivered to your inbox.'
+  'combining MBTI, Human Design, and career psychology. Unlock your Re:Lumma Blueprint.'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
 
   title: {
-    default:  'Character Career Blueprint',
-    template: '%s | Character Career Blueprint',
+    default:  'Re:Lumma',
+    template: '%s | Re:Lumma',
   },
   description: DESCRIPTION,
-  keywords:    ['career', 'MBTI', 'Human Design', 'AI', 'career blueprint', 'karier', 'kepribadian'],
+  keywords:    ['career', 'MBTI', 'Human Design', 'AI', 'career blueprint', 'Re:Lumma', 'karier', 'kepribadian'],
 
   openGraph: {
-    title:       'Character Career Blueprint',
+    title:       'Re:Lumma',
     description: DESCRIPTION,
     url:         '/',
-    siteName:    'Character Career Blueprint',
+    siteName:    'Re:Lumma',
     type:        'website',
     locale:      'id_ID',
     images: [{
       url:    '/opengraph-image',
       width:  1200,
       height: 630,
-      alt:    'Character Career Blueprint — Discover Your Career Identity',
+      alt:    'Re:Lumma — Discover Your Career Identity',
     }],
   },
 
   twitter: {
     card:        'summary_large_image',
-    title:       'Character Career Blueprint',
+    title:       'Re:Lumma',
     description: DESCRIPTION,
     images:      ['/opengraph-image'],
   },

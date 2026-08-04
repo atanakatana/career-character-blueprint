@@ -15,7 +15,7 @@ const PHASES: Phase[] = [
   { Icon: GitCompareArrows, tag: 'PHASE 02', title: 'Cross-reference frameworks', desc: 'The engine maps where MBTI and Human Design agree, and where they productively conflict.',           color: 'text-pixel-blue'  },
   { Icon: ScanSearch,       tag: 'PHASE 03', title: 'Detect patterns',           desc: 'Synergies, tensions and blind spots surface as repeatable behavioural patterns.',                    color: 'text-pixel-green' },
   { Icon: Trophy,           tag: 'PHASE 04', title: 'Score career arenas',       desc: 'Dozens of career arenas are ranked by fit against your specific configuration.',                     color: 'text-pixel-gold'  },
-  { Icon: PenTool,          tag: 'PHASE 05', title: 'Compose your codex',        desc: 'Everything is written up into a readable, 10-section Career Character Blueprint.',                    color: 'text-pixel-blue'  },
+  { Icon: PenTool,          tag: 'PHASE 05', title: 'Compose your codex',        desc: 'Everything is written up into a readable, 10-section Re:Lumma Blueprint.',                    color: 'text-pixel-blue'  },
 ]
 
 const METRICS = [

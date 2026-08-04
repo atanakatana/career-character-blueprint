@@ -1,5 +1,5 @@
 """
-Career Blueprint delivery email.
+Re:Lumma Blueprint delivery email.
 
 Design constraints:
 - Table-based layout (Outlook compatibility)
@@ -110,7 +110,7 @@ def _layout(
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Your Career Blueprint is Ready</title>
+  <title>Your Re:Lumma Blueprint is Ready</title>
   <!--[if mso]>
   <noscript><xml><o:OfficeDocumentSettings>
     <o:PixelsPerInch>96</o:PixelsPerInch>
@@ -132,7 +132,7 @@ def _layout(
 
   <!-- Preheader -->
   <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">
-    {e_title} &mdash; your Career Blueprint has been crafted. Click to open your full report.&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;
+    {e_title} &mdash; your Re:Lumma Blueprint has been crafted. Click to open your full reading.&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;
   </div>
 
   <center>
@@ -156,7 +156,7 @@ def _layout(
                 <tr>
                   <td style="font-family:'Courier New',Courier,monospace;
                               font-size:10px;color:#F5C542;letter-spacing:2px;">
-                    &#9670; CHARACTER CAREER BLUEPRINT
+                    &#9670; RE:LUMMA
                   </td>
                   <td align="right"
                       style="font-family:'Courier New',Courier,monospace;
@@ -181,7 +181,7 @@ def _layout(
                   style="margin:0 0 12px;font-family:Georgia,'Times New Roman',serif;
                          font-size:26px;font-weight:bold;color:#F5F5F5;line-height:1.35;
                          letter-spacing:0;">
-                Your Career Blueprint<br />is Ready, {e_nickname}
+                Your Re:Lumma Blueprint<br />is Ready, {e_nickname}
               </h1>
               <p style="margin:0;font-family:'Courier New',Courier,monospace;
                          font-size:9px;color:#8892A4;letter-spacing:2px;">
@@ -201,7 +201,7 @@ def _layout(
                       style="padding:8px 14px;border-bottom:1px solid #2E3B52;">
                     <span style="font-family:'Courier New',Courier,monospace;
                                   font-size:8px;color:#F5C542;letter-spacing:2px;">
-                      CHARACTER CLASS
+                      BLUEPRINT ARCHETYPE
                     </span>
                   </td>
                 </tr>
@@ -281,8 +281,8 @@ def _layout(
                 style="padding:20px 28px;border-top:2px solid #2E3B52;">
               <p style="margin:0;font-family:'Courier New',Courier,monospace;
                          font-size:8px;color:#8892A4;line-height:1.8;">
-                Character Career Blueprint &middot; AI-Powered Career Guidance<br />
-                You are receiving this because you submitted a Career Blueprint request.<br />
+                Re:Lumma &middot; AI-Powered Career Guidance<br />
+                You are receiving this because you submitted a Re:Lumma Blueprint request.<br />
                 This is a transactional email. No marketing. No spam.
               </p>
             </td>

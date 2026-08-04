@@ -18,7 +18,7 @@ export function Step5_Review({ data, isSubmitting, submitError, onSubmit, onGoTo
       <div>
         <p className="font-vt text-vt-xl text-pixel-gold mb-1">Review & Submit</p>
         <p className="font-body text-sm text-pixel-muted">
-          Confirm your details before we generate your blueprint.
+          Confirm your details before we generate your free Trial Reading.
         </p>
       </div>
 
@@ -60,7 +60,7 @@ export function Step5_Review({ data, isSubmitting, submitError, onSubmit, onGoTo
 
       {/* Privacy note */}
       <p className="font-body text-xs text-pixel-muted text-center">
-        Your data is used only to generate your blueprint and deliver it to your email.
+        Your data is used only to generate your Trial Reading and, later, your Complete Blueprint.
         It is not shared with third parties.
       </p>
 
@@ -85,10 +85,10 @@ export function Step5_Review({ data, isSubmitting, submitError, onSubmit, onGoTo
           {isSubmitting ? (
             <>
               <span className="animate-pixel-blink">⬛</span>
-              &nbsp; Sending to AI&hellip;
+              &nbsp; Building Your Trial Reading&hellip;
             </>
           ) : (
-            '▶\u00a0 Generate My Blueprint'
+            '▶\u00a0 Get My Free Trial Reading'
           )}
         </PixelButton>
       </div>

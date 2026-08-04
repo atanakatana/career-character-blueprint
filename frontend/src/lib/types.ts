@@ -157,3 +157,51 @@ export interface ApiError {
 }
 
 export type LoadingState = 'idle' | 'loading' | 'success' | 'error'
+
+// ─── TRIAL READING ───────────────────────────────────────────────────────────
+export interface TrialReadingResponse {
+  character_archetype:         string
+  personality_summary:         string
+  core_strengths:              string[]
+  energy_type:                 string
+  basic_career_recommendation: string
+  mbti_type:                   string
+}
+
+// ─── AUTH / ACCOUNT ──────────────────────────────────────────────────────────
+export interface AuthResponse {
+  access_token: string
+  token_type:   string
+  expires_in:   number
+}
+
+export interface UserProfile {
+  id:            string
+  email:         string
+  nickname:      string
+  is_active:     boolean
+  last_login_at: string | null
+  created_at:    string
+}
+
+export interface MyBlueprintResponse {
+  unlocked: boolean
+  status:   'none' | 'pending' | 'processing' | 'failed' | 'completed'
+  report:   BlueprintReportResponse | null
+  token:    string | null
+}
+
+// ─── HABIT TRACKER ───────────────────────────────────────────────────────────
+export interface HabitItem {
+  id:              string
+  name:            string
+  completed_today: boolean
+  current_streak:  number
+  sort_order:      number
+}
+
+export interface HabitListResponse {
+  habits:          HabitItem[]
+  today_completed: number
+  today_total:     number
+}

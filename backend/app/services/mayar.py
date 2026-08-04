@@ -25,13 +25,13 @@ SANDBOX_BASE = "https://api.mayar.club/hl/v2"
 
 TIER_CONFIG = {
     "tier1": {
-        "label":       "Career Blueprint",
-        "description": "Full AI-powered Career Blueprint — MBTI × Human Design × 7-section analysis delivered via email.",
+        "label":       "Re:Lumma Blueprint",
+        "description": "Full AI-powered Re:Lumma Blueprint — MBTI x Human Design x 7-section reading delivered via email.",
         "amount":      settings.TIER1_PRICE,
     },
     "tier2": {
-        "label":       "Career Blueprint + Habit Tracker",
-        "description": "Everything in Tier 1, plus a personalised RPG habit tracker to monitor your progress toward your career goals.",
+        "label":       "Re:Lumma Blueprint + Habit Tracker",
+        "description": "Everything in the Blueprint, plus a personalised habit tracker dashboard to monitor your progress toward your career goals.",
         "amount":      settings.TIER2_PRICE,
     },
 }

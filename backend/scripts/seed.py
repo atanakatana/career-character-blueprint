@@ -365,7 +365,7 @@ Output ONLY the following JSON object. No text before or after it.
 
 async def seed() -> None:
     print("─" * 55)
-    print("Character Career Blueprint — Database Seed")
+    print("Re:Lumma — Database Seed")
     print("─" * 55)
 
     async with AsyncSessionLocal() as db:

@@ -43,7 +43,7 @@ export function CtaSection() {
 
           {/* Subtext */}
           <p className="font-body text-base text-pixel-muted leading-relaxed mt-5 max-w-md mx-auto">
-            Answer 9 questions. Get a personalized career report built from who you 
+            Answer 9 questions. Get a personalized career Blueprint built from who you
             actually are — not who a generic quiz thinks you might be.
           </p>
 

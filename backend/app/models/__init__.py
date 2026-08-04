@@ -7,6 +7,10 @@ from app.models.report_token import ReportToken
 from app.models.email_log import EmailLog
 from app.models.prompt_template import PromptTemplate
 from app.models.ai_model_config import AIModelConfig
+from app.models.payment import Payment
+from app.models.user import User
+from app.models.habit import Habit
+from app.models.habit_completion import HabitCompletion
 
 __all__ = [
     "AdminUser",
@@ -16,4 +20,8 @@ __all__ = [
     "EmailLog",
     "PromptTemplate",
     "AIModelConfig",
+    "Payment",
+    "User",
+    "Habit",
+    "HabitCompletion",
 ]

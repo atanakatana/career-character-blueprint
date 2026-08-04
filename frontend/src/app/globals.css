@@ -363,6 +363,75 @@ html { scroll-behavior: smooth; }
   .fx-drift      { animation: drift-float 7s ease-in-out infinite; will-change: transform; }
 }
 
+/* =====================================================
+   GLASSMORPHISM LAYER (Login / Register)
+   A distinct, premium visual treatment reserved for the
+   account auth screens — glass panels + aurora backdrop,
+   layered on the same colour tokens as the rest of the app
+   so it still feels like the same product.
+   ===================================================== */
+@layer components {
+
+  .glass-panel {
+    background: rgba(28, 36, 52, 0.55);
+    border: 1px solid rgba(245, 197, 66, 0.18);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .glass-input {
+    width: 100%;
+    background: rgba(16, 20, 31, 0.5);
+    color: var(--color-text);
+    border: 1px solid rgba(245, 197, 66, 0.15);
+    border-radius: 12px;
+    font-family: var(--font-inter), sans-serif;
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+  .glass-input:focus {
+    outline: none;
+    border-color: rgba(245, 197, 66, 0.6);
+    background: rgba(16, 20, 31, 0.7);
+    box-shadow: 0 0 0 3px rgba(245, 197, 66, 0.12);
+  }
+  .glass-input::placeholder { color: var(--color-muted); }
+
+  .glass-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    font-family: var(--font-inter), sans-serif;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--color-gold), #ffd873);
+    color: #1a1408;
+    box-shadow: 0 4px 20px rgba(245, 197, 66, 0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  }
+  .glass-btn-primary:hover:not(:disabled)  { transform: translateY(-1px); box-shadow: 0 6px 26px rgba(245, 197, 66, 0.45); }
+  .glass-btn-primary:active:not(:disabled) { transform: translateY(0); }
+  .glass-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .glass-orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(64px);
+    animation: aurora-drift 20s ease-in-out infinite;
+    will-change: transform;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-orb { animation: none !important; }
+}
+
 /* Honour reduced-motion for every cinematic effect */
 @media (prefers-reduced-motion: reduce) {
   .fx-aurora,

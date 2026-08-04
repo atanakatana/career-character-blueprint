@@ -9,7 +9,7 @@ import { ParticleField, MagneticButton } from '@/components/ui/motion'
 import { EASE_OUT_EXPO } from '@/lib/motion'
 
 /** Headline is revealed word-by-word for a cinematic "title card" feel. */
-const HEADLINE = ['Discover', 'Your', 'Career', 'Character', 'Blueprint']
+const HEADLINE = ['Discover', 'Your', 'Re:Lumma', 'Blueprint']
 
 const STAT_BARS = [
   { label: 'Career Alignment',     value: 94, color: 'bg-pixel-gold'  },
@@ -121,7 +121,7 @@ export function HeroSection() {
               {HEADLINE.map((word, i) => (
                 <motion.span
                   key={word}
-                  className={`mr-[0.28em] inline-block ${word === 'Character' || word === 'Blueprint' ? 'fx-gradient-text' : ''}`}
+                  className={`mr-[0.28em] inline-block ${word === 'Re:Lumma' || word === 'Blueprint' ? 'fx-gradient-text' : ''}`}
                   initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                   transition={{ duration: 0.7, ease: EASE_OUT_EXPO, delay: 0.15 + i * 0.1 }}
@@ -151,7 +151,7 @@ export function HeroSection() {
               We fuse your <span className="text-pixel-text">MBTI</span> type,{' '}
               <span className="text-pixel-text">Human Design</span> configuration, and{' '}
               <span className="text-pixel-text">AI</span> synthesis into a personalized
-              Career Character Blueprint — a codex of your strengths, arenas, and path forward.
+              Re:Lumma Blueprint — a codex of your strengths, arenas, and path forward.
             </motion.p>
 
             {/* CTAs */}
@@ -250,7 +250,7 @@ function HeroCodex({ reduced }: { reduced: boolean }) {
 
         {/* Identity */}
         <div className="mb-4 mt-4 space-y-2">
-          <p className="font-press text-[0.38rem] uppercase tracking-widest text-pixel-muted">Character Class</p>
+          <p className="font-press text-[0.38rem] uppercase tracking-widest text-pixel-muted">Blueprint Archetype</p>
           <p className="font-pixel text-xl leading-tight text-pixel-gold">The Empathic Architect</p>
           <div className="mt-2 flex flex-wrap gap-1.5">
             <span className="pixel-tag">INFJ</span>

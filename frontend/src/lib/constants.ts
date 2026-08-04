@@ -61,6 +61,12 @@ export const FORM_STEPS = [
 
 export type FormStep = typeof FORM_STEPS[number]
 
+// ─── SESSION STORAGE KEYS ───────────────────────────────────────────────────
+/** Caches the completed assessment answers between the free Trial Reading and
+ *  the paid unlock, so the user is never asked to re-fill the form after
+ *  logging in / paying. Cleared once replayed through /api/submissions. */
+export const PENDING_ASSESSMENT_KEY = 'relumma_pending_assessment'
+
 // ─── REPORT SECTIONS ───────────────────────────────────────────────────────
 export const REPORT_SECTIONS = [
   { id: 'profile-summary',         label: '01 — Profile Summary' },

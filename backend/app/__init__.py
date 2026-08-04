@@ -1,1 +1,1 @@
-# Character Career Blueprint — FastAPI Backend
+# Re:Lumma — FastAPI Backend

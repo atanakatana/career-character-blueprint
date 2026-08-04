@@ -13,6 +13,7 @@ import { Step2_MBTI }        from './Step2_MBTI'
 import { Step3_HumanDesign } from './Step3_HumanDesign'
 import { Step4_Career }      from './Step4_Career'
 import { Step5_Review }      from './Step5_Review'
+import { TrialReadingScreen } from '@/components/trial/TrialReadingScreen'
 
 import {
   INITIAL_FORM_STATE,
@@ -20,9 +21,9 @@ import {
   type FormState,
   type FormErrors,
 } from '@/lib/validation'
-import { createSubmission } from '@/lib/api'
-import type { SubmissionFormData } from '@/lib/types'
-import { FORM_STEPS } from '@/lib/constants'
+import { getTrialReading } from '@/lib/api'
+import type { TrialReadingResponse } from '@/lib/types'
+import { FORM_STEPS, PENDING_ASSESSMENT_KEY } from '@/lib/constants'
 
 const STEP_LABELS = FORM_STEPS.map(s => s.label)
 
@@ -38,6 +39,7 @@ export function CharacterCreationForm({ prefillEmail }: { prefillEmail?: string 
   const [errors,       setErrors]       = useState<FormErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError,  setSubmitError]  = useState<string | null>(null)
+  const [trialData,    setTrialData]    = useState<TrialReadingResponse | null>(null)
 
   // ── Field update ────────────────────────────────────────────────────────────
   const handleChange = useCallback((field: keyof FormState, value: string) => {
@@ -79,19 +81,45 @@ export function CharacterCreationForm({ prefillEmail }: { prefillEmail?: string 
   }, [step])
 
   // ── Submit ──────────────────────────────────────────────────────────────────
+  // The assessment is free and gated behind nothing. Submitting it produces
+  // an instant Trial Reading (computed from static knowledge, not an AI
+  // call) — no email, no payment, no account needed yet. The full answers
+  // are cached so that if the user later unlocks the Complete Blueprint,
+  // they never have to fill this form out a second time.
   const handleSubmit = useCallback(async () => {
     setIsSubmitting(true)
     setSubmitError(null)
     try {
-      await createSubmission(formData as unknown as SubmissionFormData)
-      router.push('/thank-you')
+      const reading = await getTrialReading({
+        mbti_type:    formData.mbti_type,
+        hd_type:      formData.hd_type,
+        hd_authority: formData.hd_authority,
+        hd_profile:   formData.hd_profile,
+      })
+
+      if (typeof window !== 'undefined') {
+        window.sessionStorage.setItem(PENDING_ASSESSMENT_KEY, JSON.stringify(formData))
+      }
+
+      setTrialData(reading)
     } catch (err) {
       setSubmitError(
-        err instanceof Error ? err.message : 'Submission failed. Please try again.',
+        err instanceof Error ? err.message : 'Could not build your Trial Reading. Please try again.',
       )
+    } finally {
       setIsSubmitting(false)
     }
-  }, [formData, router])
+  }, [formData])
+
+  // ── Trial Reading revealed — replaces the wizard entirely ───────────────────
+  if (trialData) {
+    return (
+      <TrialReadingScreen
+        reading={trialData}
+        onUnlock={() => router.push('/#pricing')}
+      />
+    )
+  }
 
   // ── Step renderer ───────────────────────────────────────────────────────────
   const stepProps = { data: formData, errors, onChange: handleChange }
@@ -127,7 +155,7 @@ export function CharacterCreationForm({ prefillEmail }: { prefillEmail?: string 
 
       {/* Header */}
       <div className="text-center space-y-1">
-        <h1 className="font-pixel text-xl text-pixel-gold">Character Career Blueprint</h1>
+        <h1 className="font-pixel text-xl text-pixel-gold">Re:Lumma Blueprint</h1>
         <p className="font-press text-[0.4rem] text-pixel-muted">
           STEP {step} OF {FORM_STEPS.length} — {FORM_STEPS[step - 1].title.toUpperCase()}
         </p>

@@ -5,7 +5,7 @@ import { PixelPanel }  from '@/components/ui/PixelPanel'
 import { PixelButton } from '@/components/ui/PixelButton'
 
 export const metadata: Metadata = {
-  title: 'Blueprint Requested | Character Career Blueprint',
+  title: 'Blueprint Requested | Re:Lumma',
   // Prevent indexing — this page has no useful content for search
   robots: { index: false },
 }

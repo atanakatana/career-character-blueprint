@@ -9,7 +9,7 @@ const BENEFITS = [
     symbolColor: 'text-pixel-gold',
     variant:     'default' as const,
     title:       'Built around you, not a template',
-    description: 'The report is generated from the intersection of your MBTI type, Human Design configuration, and real career context. Not a generic quiz result — a document written about you specifically.',
+    description: 'The Blueprint is generated from the intersection of your MBTI type, Human Design configuration, and real career context. Not a generic quiz result — a document written about you specifically.',
   },
   {
     symbol:      '▸',

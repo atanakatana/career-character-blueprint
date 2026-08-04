@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og'
 
-export const alt         = 'Character Career Blueprint'
+export const alt         = 'Re:Lumma'
 export const size        = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -61,7 +61,7 @@ export default function OGImage() {
       >
         <span style={{ color: GOLD, fontSize: 18, fontWeight: 900 }}>◆</span>
         <span style={{ color: GOLD, fontSize: 18, fontWeight: 900, letterSpacing: 4 }}>
-          CHARACTER CAREER BLUEPRINT
+          RE:LUMMA
         </span>
         <span style={{ color: GOLD, fontSize: 18, fontWeight: 900 }}>◆</span>
       </div>
@@ -133,7 +133,7 @@ export default function OGImage() {
       >
         <div style={{ width: 48, height: 2, background: GOLD }} />
         <span style={{ color: MUTED, fontSize: 16, letterSpacing: 3 }}>
-          CHARACTER CAREER BLUEPRINT
+          RE:LUMMA
         </span>
         <div style={{ width: 48, height: 2, background: GOLD }} />
       </div>

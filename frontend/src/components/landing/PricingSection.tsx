@@ -1,13 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Gem, Shield, Crown, Check, Lock } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { TiltCard, MagneticButton } from '@/components/ui/motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { fadeUp, staggerContainer, staggerItem, VIEWPORT, EASE_OUT_EXPO } from '@/lib/motion'
-import { config } from '@/lib/config'
 
 interface Tier {
   id: string | null           // null = not purchasable yet (Legend)
@@ -33,7 +33,7 @@ const TIERS: Tier[] = [
     gradient: 'conic-gradient(from 0deg, transparent 55%, #5CE27A, transparent 85%)',
     glow: 'rgba(92,226,122,0.16)',
     features: [
-      '7-section career identity report',
+      '7-section career identity Blueprint',
       'MBTI × Human Design conflict analysis',
       'Profile line deep analysis',
       '3 blind spots (mechanism + scenario)',
@@ -41,7 +41,7 @@ const TIERS: Tier[] = [
       'Personalised decision protocol',
       'Delivered to your email in 24 hours',
     ],
-    locked: ['Habit tracker access', 'User account'],
+    locked: ['Habit tracker access', 'Account dashboard'],
   },
   {
     id: 'tier2', rarity: 'RARE', className: 'Adventurer', Icon: Shield, price: 'Rp 299.000',
@@ -50,12 +50,11 @@ const TIERS: Tier[] = [
     glow: 'rgba(77,166,255,0.18)', popular: true,
     features: [
       'Everything in Explorer',
-      'RPG habit tracker dashboard',
-      'Daily quest completion system (EXP)',
+      'Habit tracker dashboard',
+      'Daily habit completion + streaks',
       'Career goal progress tracking',
-      'Level + streak system',
-      'User account for your tracker',
-      'Blueprint + tracker anytime',
+      'Account to access your Blueprint anytime',
+      'Complete Blueprint + tracker, always available',
     ],
   },
   {
@@ -75,34 +74,25 @@ const TIERS: Tier[] = [
 
 export function PricingSection() {
   const reduced = usePrefersReducedMotion()
+  const router = useRouter()
   const [selected, setSelected] = useState<string | null>(null)
   const [email, setEmail]       = useState('')
-  const [loading, setLoading]   = useState(false)
   const [error, setError]       = useState('')
 
   const selectedTier = TIERS.find((t) => t.id === selected)
 
-  const handleProceed = async () => {
+  // Package selection no longer pays immediately — the flow is now
+  // Choose Package -> Login -> Register (if needed) -> Dashboard, where
+  // the actual Mayar.id checkout is triggered. This keeps the existing
+  // /api/payments/create + webhook pipeline completely unchanged; it's
+  // just called one step later, from the Dashboard instead of from here.
+  const handleProceed = () => {
     if (!selected) return
     if (!email.trim()) { setError('Please enter your email address.'); return }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError('Please enter a valid email address.'); return }
-    setError(''); setLoading(true)
-    try {
-      const res = await fetch(`${config.api.baseUrl}/api/payments/create`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), tier: selected }),
-      })
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        throw new Error((data as { detail?: string }).detail ?? `Error ${res.status}`)
-      }
-      const data = (await res.json()) as { payment_url: string }
-      window.location.href = data.payment_url
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
-      setLoading(false)
-    }
+    setError('')
+    const params = new URLSearchParams({ tier: selected, email: email.trim() })
+    router.push(`/login?${params.toString()}`)
   }
 
   return (
@@ -118,7 +108,7 @@ export function PricingSection() {
             Claim your <span className="fx-gradient-text">character card</span>
           </h2>
           <p className="mx-auto mt-4 max-w-lg font-body text-sm text-pixel-muted">
-            Every tier includes the full Career Blueprint. Level up for the RPG habit tracker and beyond.
+            Every tier includes the full Re:Lumma Blueprint. Level up for the habit tracker and beyond.
           </p>
         </motion.div>
 
@@ -173,16 +163,13 @@ export function PricingSection() {
                 {error && <p className="mt-3 font-press text-[0.4rem] text-pixel-error">{error}</p>}
                 <MagneticButton
                   onClick={handleProceed}
-                  disabled={loading}
-                  aria-label={`Pay ${selectedTier.price}`}
+                  aria-label="Unlock your Blueprint"
                   className="pixel-btn-primary mt-4 w-full px-5 py-3 text-press-xs disabled:opacity-45"
                 >
-                  <span className="inline-flex items-center gap-2">
-                    {loading ? '…REDIRECTING TO PAYMENT' : `▶ PAY ${selectedTier.price}`}
-                  </span>
+                  <span className="inline-flex items-center gap-2">▶ UNLOCK YOUR BLUEPRINT</span>
                 </MagneticButton>
                 <p className="mt-3 text-center font-press text-[0.34rem] leading-relaxed text-pixel-muted">
-                  Secure payment via Mayar.id · All major Indonesian methods
+                  Log in or create your account next · Secure payment via Mayar.id
                 </p>
               </div>
             </motion.div>

@@ -19,13 +19,13 @@ export default function Icon() {
       <span
         style={{
           color:       '#F5C542',
-          fontSize:    13,
+          fontSize:    10,
           fontWeight:  900,
           fontFamily:  'monospace',
           letterSpacing: '-0.5px',
         }}
       >
-        CC
+        R:L
       </span>
     </div>,
     { ...size },

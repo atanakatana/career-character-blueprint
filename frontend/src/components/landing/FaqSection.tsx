@@ -9,12 +9,12 @@ import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { fadeUp, staggerContainer, staggerItem, VIEWPORT, EASE_OUT_EXPO } from '@/lib/motion'
 
 const FAQS = [
-  { q: 'What exactly is a Career Character Blueprint?', a: 'A 10-section personalised report that treats your career identity like an RPG character sheet — your class, strengths, blind spots, ideal arenas, and a concrete action plan, all derived from your actual personality and energy design.' },
+  { q: 'What exactly is a Re:Lumma Blueprint?', a: 'A 10-section personalised reading that treats your career identity like an RPG character sheet — your class, strengths, blind spots, ideal arenas, and a concrete action plan, all derived from your actual personality and energy design.' },
   { q: 'How do MBTI and Human Design work together?', a: 'MBTI maps how you think and decide; Human Design maps how your energy wants to operate. On their own each is partial. Read together, they reveal patterns — synergies and tensions — that neither framework shows alone. Our AI synthesis focuses on that intersection.' },
   { q: 'Do I need to know my Human Design already?', a: 'It helps, but no. The form links you to free tools to find your Type, Authority and Profile in a couple of minutes. If you only know your MBTI, you can still proceed.' },
-  { q: 'What happens after I pay?', a: 'You are redirected back to fill in your personality data. Your blueprint is prepared and sent to the email you paid with, typically within 24 hours, as a private shareable link.' },
-  { q: 'What is the RPG Habit Tracker?', a: 'The Adventurer tier adds a personal dashboard where your blueprint\'s recommendations become completable daily quests — you earn EXP, keep streaks, level up, and track progress toward your career goals.' },
-  { q: 'Is my data private?', a: 'Your inputs are used only to generate your report. Your blueprint lives behind a unique unguessable link that only you receive by email.' },
+  { q: 'Do I have to pay before I see anything?', a: 'No. Complete the free assessment first and you\'ll get an instant Trial Reading — your archetype, core strengths, and energy type — with no email or payment required. Your Complete Blueprint unlocks after checkout.' },
+  { q: 'What is the Habit Tracker?', a: 'The Blueprint + Tracker package adds a personal dashboard where your Blueprint\'s recommendations become daily habits — track completions, keep streaks, and see progress toward your career goals.' },
+  { q: 'Is my data private?', a: 'Your inputs are used only to generate your Blueprint. Your full Blueprint lives behind a unique unguessable link that only you receive by email, or in your account dashboard once you\'ve unlocked it.' },
 ]
 
 export function FaqSection() {
@@ -101,7 +101,7 @@ export function FaqSection() {
             Your career codex is waiting to be <span className="fx-gradient-text">written</span>
           </h3>
           <p className="mx-auto mt-4 max-w-md font-body text-sm text-pixel-muted">
-            Answer 9 questions. Receive a report built from who you actually are.
+            Answer 9 questions. Receive a Blueprint built from who you actually are.
           </p>
           <div className="mt-8 flex justify-center">
             <MagneticButton

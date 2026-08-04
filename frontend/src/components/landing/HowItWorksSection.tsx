@@ -20,7 +20,7 @@ const STEPS: Step[] = [
   { n: '01', Icon: Brain,      title: 'Input Your MBTI',        desc: 'Tell us your 16-type personality. This maps how you think, decide, and recharge.',                 detail: 'Personality core',  color: 'text-pixel-gold',  ring: 'border-pixel-gold'  },
   { n: '02', Icon: Hexagon,    title: 'Input Human Design',     desc: 'Your Type, Authority and Profile reveal how your energy actually wants to operate.',                detail: 'Energy blueprint',  color: 'text-pixel-blue',  ring: 'border-pixel-blue'  },
   { n: '03', Icon: Sparkles,   title: 'AI Analysis',            desc: 'Our engine cross-references both frameworks against a structured career knowledge base.',            detail: 'Synthesis engine',  color: 'text-pixel-green', ring: 'border-pixel-green' },
-  { n: '04', Icon: ScrollText, title: 'Career Character Blueprint', desc: 'Receive a 10-section codex: your class, arenas, blind spots, roadmap and action plan.',          detail: 'Your codex',        color: 'text-pixel-gold',  ring: 'border-pixel-gold'  },
+  { n: '04', Icon: ScrollText, title: 'Re:Lumma Blueprint', desc: 'Receive a 10-section codex: your class, arenas, blind spots, roadmap and action plan.',          detail: 'Your codex',        color: 'text-pixel-gold',  ring: 'border-pixel-gold'  },
 ]
 
 export function HowItWorksSection() {

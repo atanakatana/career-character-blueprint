@@ -41,7 +41,7 @@ export default function AdminLoginPage() {
             <span className="font-press text-sm text-pixel-bg">CC</span>
           </div>
           <p className="font-press text-sm text-pixel-gold">CCB ADMIN</p>
-          <p className="font-press text-xs text-pixel-muted mt-1">CHARACTER CAREER BLUEPRINT</p>
+          <p className="font-press text-xs text-pixel-muted mt-1">RE:LUMMA ADMIN</p>
         </div>
 
         <PixelPanel>

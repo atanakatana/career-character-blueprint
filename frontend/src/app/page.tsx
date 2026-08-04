@@ -10,13 +10,13 @@ import { PricingSection }             from '@/components/landing/PricingSection'
 import { FaqSection }                 from '@/components/landing/FaqSection'
 
 export const metadata: Metadata = {
-  title: 'Character Career Blueprint | AI-Powered Career Guidance',
+  title: 'Re:Lumma | AI-Powered Career Guidance',
   description:
-    'Discover your Career Character Blueprint — a cinematic, AI-powered career identity ' +
-    'built from your MBTI type and Human Design. 9 questions, delivered to your inbox.',
-  keywords: ['career guidance', 'MBTI career', 'Human Design career', 'AI career blueprint', 'career identity'],
+    'Discover your Re:Lumma Blueprint — a cinematic, AI-powered career identity ' +
+    'built from your MBTI type and Human Design. Start with a free Trial Reading.',
+  keywords: ['career guidance', 'MBTI career', 'Human Design career', 'AI career blueprint', 'career identity', 'Re:Lumma'],
   openGraph: {
-    title: 'Discover Your Career Character Blueprint',
+    title: 'Discover Your Re:Lumma Blueprint',
     description:
       'A 10-section personalized career codex built from your MBTI type, Human Design, and AI synthesis.',
     type: 'website',

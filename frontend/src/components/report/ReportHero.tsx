@@ -16,7 +16,7 @@ export function ReportHero({ report }: { report: BlueprintReportResponse }) {
     <div className="border-b-2 border-pixel-border bg-pixel-panel/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
         <p className="font-press text-xs text-pixel-muted mb-3 uppercase tracking-widest">
-          Character Class
+          Blueprint Archetype
         </p>
         <h1 className="font-pixel text-4xl sm:text-5xl text-pixel-gold leading-tight mb-5">
           {character_title}

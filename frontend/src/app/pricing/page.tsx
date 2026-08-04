@@ -1,24 +1,24 @@
 'use client'
 
 import { useState }   from 'react'
+import { useRouter }   from 'next/navigation'
 import Link            from 'next/link'
 import { motion }      from 'framer-motion'
 import { PixelPanel }  from '@/components/ui/PixelPanel'
 import { PixelButton } from '@/components/ui/PixelButton'
-import { config }      from '@/lib/config'
 
 // ── Tier definitions ──────────────────────────────────────────────────────────
 
 const TIERS = [
   {
     id:       'tier1',
-    label:    'CAREER BLUEPRINT',
+    label:    'RE:LUMMA BLUEPRINT',
     subtitle: 'Solo Quest',
     price:    'Rp 149.000',
     color:    'border-pixel-gold',
     badge:    'bg-pixel-gold text-pixel-bg',
     features: [
-      '7-section career identity report',
+      '7-section career identity Blueprint',
       'MBTI × Human Design conflict analysis',
       'Profile line deep analysis',
       '3 blind spots (MECHANISM + SCENARIO)',
@@ -29,7 +29,7 @@ const TIERS = [
     ],
     notIncluded: [
       'Habit tracker access',
-      'User account',
+      'Account dashboard',
     ],
   },
   {
@@ -40,13 +40,12 @@ const TIERS = [
     color:    'border-pixel-blue',
     badge:    'bg-pixel-blue text-white',
     features: [
-      'Everything in Career Blueprint',
-      'RPG habit tracker dashboard',
-      'Daily quest completion system (EXP)',
+      'Everything in Re:Lumma Blueprint',
+      'Habit tracker dashboard',
+      'Daily habit completion + streaks',
       'Career goal progress tracking',
-      'Level + streak system',
-      'User account to access your tracker',
-      'Blueprint + tracker accessible anytime',
+      'Account to access your Blueprint anytime',
+      'Complete Blueprint + tracker, always available',
     ],
     notIncluded: [],
     recommended: true,
@@ -56,40 +55,24 @@ const TIERS = [
 // ── Main page ─────────────────────────────────────────────────────────────────
 
 export default function PricingPage() {
+  const router = useRouter()
   const [selectedTier, setSelectedTier]   = useState<string | null>(null)
   const [email,        setEmail]          = useState('')
-  const [loading,      setLoading]        = useState(false)
   const [error,        setError]          = useState('')
 
-  const handleProceed = async (tierId: string) => {
+  // Package selection routes to Login next (Choose Package -> Login ->
+  // Register if needed -> Dashboard). The actual Mayar.id payment link is
+  // created from the Dashboard, once we know who's logged in — the
+  // /api/payments/create endpoint itself is unchanged.
+  const handleProceed = (tierId: string) => {
     if (!email.trim()) { setError('Please enter your email address.'); return }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError('Please enter a valid email address.')
       return
     }
     setError('')
-    setLoading(true)
-
-    try {
-      const res = await fetch(`${config.api.baseUrl}/api/payments/create`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ email: email.trim(), tier: tierId }),
-      })
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        throw new Error((data as { detail?: string }).detail ?? `Error ${res.status}`)
-      }
-
-      const data = await res.json() as { payment_url: string }
-
-      // Redirect to Mayar.id checkout
-      window.location.href = data.payment_url
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
-      setLoading(false)
-    }
+    const params = new URLSearchParams({ tier: tierId, email: email.trim() })
+    router.push(`/login?${params.toString()}`)
   }
 
   return (
@@ -116,7 +99,7 @@ export default function PricingPage() {
             CHOOSE YOUR QUEST
           </h1>
           <p className="font-body text-base text-pixel-muted max-w-md mx-auto">
-            Both plans include the full 7-section Career Blueprint. Tier 2 adds a personalised RPG habit tracker.
+            Both plans include the full 7-section Re:Lumma Blueprint. Blueprint + Tracker adds a personalised habit tracker.
           </p>
         </div>
 
@@ -217,16 +200,14 @@ export default function PricingPage() {
                 variant="primary"
                 size="md"
                 className="w-full"
-                disabled={!selectedTier || loading}
+                disabled={!selectedTier}
                 onClick={() => selectedTier && handleProceed(selectedTier)}
               >
-                {loading
-                  ? '…REDIRECTING TO PAYMENT'
-                  : `▶ PAY ${TIERS.find(t => t.id === selectedTier)?.price ?? 'NOW'}`}
+                ▶ UNLOCK YOUR BLUEPRINT
               </PixelButton>
 
               <p className="font-press text-xs text-pixel-muted text-center leading-relaxed">
-                Secure payment via Mayar.id · All major Indonesian payment methods accepted
+                Log in or create your account next · Secure payment via Mayar.id
               </p>
             </div>
           </PixelPanel>
@@ -235,9 +216,9 @@ export default function PricingPage() {
         {/* FAQ */}
         <div className="mt-12 max-w-lg mx-auto space-y-4">
           {[
-            { q: 'What happens after I pay?', a: 'You\'ll be redirected back here to fill in your personality data. Your blueprint is ready within 24 hours, sent to the email you provided.' },
-            { q: 'Can I fill the form later?', a: 'Yes. After payment is confirmed you can access the form anytime using the same email you paid with.' },
-            { q: 'What is the Habit Tracker?', a: 'Tier 2 gives you a personal RPG-style dashboard where your daily quests become completable tasks, you earn EXP, and track progress toward your career goals.' },
+            { q: 'What happens after I unlock?', a: 'You\'ll log in (or create an account) and complete payment, then your Complete Blueprint is prepared and sent to your email — and shown in your Dashboard — usually within 24 hours.' },
+            { q: 'Do I need to redo the assessment?', a: 'No. If you already completed the free Trial Reading, your answers carry over automatically once you\'re logged in.' },
+            { q: 'What is the Habit Tracker?', a: 'The Blueprint + Tracker package gives you a personal dashboard where your Blueprint\'s recommendations become daily habits — track completions and streaks toward your career goals.' },
           ].map((item, i) => (
             <div key={i} className="border border-pixel-border bg-pixel-panel px-4 py-3">
               <p className="font-press text-xs text-pixel-gold mb-2">{item.q}</p>

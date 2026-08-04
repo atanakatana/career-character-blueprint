@@ -70,7 +70,7 @@ export function BlueprintPreviewSection() {
               {/* Character title + score */}
               <div className="grid grid-cols-1 gap-4 border-b border-pixel-border bg-pixel-panel/50 px-4 py-5 sm:grid-cols-[1fr_auto] sm:items-center sm:px-6">
                 <div>
-                  <p className="font-press text-[0.36rem] uppercase tracking-widest text-pixel-muted">Character Class</p>
+                  <p className="font-press text-[0.36rem] uppercase tracking-widest text-pixel-muted">Blueprint Archetype</p>
                   <h3 className="mt-1 font-pixel text-2xl text-pixel-gold sm:text-3xl">The Empathic Architect</h3>
                   <div className="mt-2 flex flex-wrap gap-2">
                     <span className="pixel-tag">INFJ</span>

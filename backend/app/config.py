@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     )
 
     # ── Application ────────────────────────────────────────────────────────
-    APP_NAME: str = "Character Career Blueprint API"
+    APP_NAME: str = "Re:Lumma API"
     APP_VERSION: str = "1.0.0"
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     # ── Email (Resend) ─────────────────────────────────────────────────────
     RESEND_API_KEY:    Optional[str] = None
     RESEND_FROM_EMAIL: str = "noreply@yourdomain.com"
-    RESEND_FROM_NAME:  str = "Character Career Blueprint"
+    RESEND_FROM_NAME:  str = "Re:Lumma"
 
     # ── Frontend ───────────────────────────────────────────────────────────
     FRONTEND_BASE_URL: str = "http://localhost:3000"
