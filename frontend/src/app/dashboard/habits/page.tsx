@@ -8,7 +8,7 @@ import { PixelPanel }  from '@/components/ui/PixelPanel'
 import { PixelButton } from '@/components/ui/PixelButton'
 import { HabitRow } from '@/components/habits/HabitRow'
 import { SimpleProgressBar } from '@/components/habits/SimpleProgressBar'
-import { isLoggedIn } from '@/lib/auth'
+import { isLoggedIn, clearToken } from '@/lib/auth'
 import { getHabits, toggleHabit, getMyBlueprint } from '@/lib/api'
 import type { HabitListResponse } from '@/lib/types'
 import { PENDING_ASSESSMENT_KEY } from '@/lib/constants'
@@ -36,6 +36,16 @@ export default function HabitTrackerPage() {
         seedArchetype = bp.report?.submission.mbti_type
       }
       setHabits(await getHabits(seedArchetype))
+    } catch {
+      // Every call on this page requires auth and there's no partial state
+      // worth rendering without habits data, so any failure here (almost
+      // always an expired/invalid token — this app has no refresh flow) is
+      // treated as a session problem. Previously this left the page stuck
+      // on "Loading your habits…" forever (see dashboard/page.tsx for the
+      // same bug, fixed the same way).
+      clearToken()
+      router.replace('/login')
+      return
     } finally {
       setLoading(false)
     }
