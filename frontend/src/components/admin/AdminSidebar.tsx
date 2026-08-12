@@ -27,10 +27,10 @@ export function AdminSidebar() {
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-pixel-gold flex items-center justify-center flex-shrink-0"
                style={{ boxShadow: '2px 2px 0px #C4A033' }}>
-            <span className="font-press text-xs text-pixel-bg">CC</span>
+            <span className="font-press text-xs text-pixel-bg">RL</span>
           </div>
           <div>
-            <p className="font-press text-xs text-pixel-gold leading-tight">CCB</p>
+            <p className="font-press text-xs text-pixel-gold leading-tight">RE:LUMMA</p>
             <p className="font-press text-[0.38rem] text-pixel-muted leading-tight">ADMIN</p>
           </div>
         </div>

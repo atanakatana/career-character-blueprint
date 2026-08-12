@@ -20,12 +20,6 @@ class PaymentCreateResponse(BaseModel):
     amount:      int
 
 
-class PaymentStatusResponse(BaseModel):
-    has_valid_payment: bool
-    tier:              Optional[str]    = None
-    paid_at:           Optional[str]    = None
-
-
 class PaymentAdminItem(BaseModel):
     id:               UUID
     created_at:       datetime

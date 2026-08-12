@@ -36,10 +36,24 @@ export default function DashboardPage() {
       return
     }
 
+    // getMe() is the auth-gating call — this app uses a single long-lived
+    // JWT with no refresh flow, so a failure here is almost always an
+    // expired or invalid token. Previously an uncaught rejection here left
+    // the page stuck on "Loading your dashboard…" forever (loading became
+    // false via the old single finally block, but profile was never set,
+    // and the render guard is `loading || !profile`). Clear the stale token
+    // and send the user back to log in instead of a dead end.
+    let me: UserProfile
     try {
-      const me = await getMe()
-      setProfile(me)
+      me = await getMe()
+    } catch {
+      clearToken()
+      router.replace('/login')
+      return
+    }
+    setProfile(me)
 
+    try {
       let bp = await getMyBlueprint()
 
       // If we're not unlocked yet but have a cached free-assessment answer
@@ -74,6 +88,11 @@ export default function DashboardPage() {
         : bp.report?.submission.mbti_type
       const h = await getHabits(seedArchetype)
       setHabits(h)
+    } catch {
+      // Profile already loaded successfully at this point — blueprint/habits
+      // are secondary data. Let the page render with whatever did load
+      // rather than dead-ending; BlueprintCard/TodayHabitsCard/
+      // ProgressOverview all already handle a null value.
     } finally {
       setLoading(false)
     }

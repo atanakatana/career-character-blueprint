@@ -12,7 +12,7 @@ from app.models.admin_user import AdminUser
 from app.core.dependencies import get_current_admin
 from app.schemas.payment import (
     PaymentCreateRequest, PaymentCreateResponse,
-    PaymentStatusResponse, PaymentAdminItem,
+    PaymentAdminItem,
     MayarWebhookPayload,
 )
 from app.services.mayar import create_payment_link, MayarError, TIER_CONFIG
@@ -173,37 +173,17 @@ async def mayar_webhook(
     return {"ok": True}
 
 
-# ── Check payment status (frontend polling) ────────────────────────────────────
-
-@router.get(
-    "/status/{email}",
-    response_model=PaymentStatusResponse,
-    summary="Check whether an email has a valid paid payment",
-)
-async def check_payment_status(
-    email: str,
-    db:    AsyncSession = Depends(get_db),
-) -> PaymentStatusResponse:
-    """
-    Used by the form page to verify the customer has paid before showing
-    the submission form. Returns the most recent paid payment for this email.
-    """
-    payment: Payment | None = await db.scalar(
-        select(Payment)
-        .where(Payment.email == email.lower().strip())
-        .where(Payment.status == "paid")
-        .order_by(Payment.paid_at.desc())
-        .limit(1)
-    )
-
-    if payment is None:
-        return PaymentStatusResponse(has_valid_payment=False)
-
-    return PaymentStatusResponse(
-        has_valid_payment=True,
-        tier=payment.tier,
-        paid_at=payment.paid_at.isoformat() if payment.paid_at else None,
-    )
+# NOTE: an unauthenticated `GET /status/{email}` endpoint used to live here
+# (pre-Sprint-13 leftover, superseded by the account-based
+# `GET /api/users/me/blueprint` flow). It let anyone check whether an
+# arbitrary email address had a paid payment — an unauthenticated PII/payment
+# oracle with no callers left in the frontend (verified: nothing in
+# frontend/src references it). Removed 2026-08-12 as a safe hardening fix;
+# it does not change any behavior the current frontend depends on. This is a
+# partial mitigation only — it does not resolve the separate, more serious
+# issue of report access being linked to an account by an unverified email
+# match (see RELUMMA-HEALTH-REPORT.md, "Critical" finding). That fix needs a
+# product decision and was deliberately left untouched.
 
 
 # ── Admin: list all payments ───────────────────────────────────────────────────

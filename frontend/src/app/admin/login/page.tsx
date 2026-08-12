@@ -38,10 +38,9 @@ export default function AdminLoginPage() {
         <div className="text-center mb-8">
           <div className="w-14 h-14 bg-pixel-gold flex items-center justify-center mx-auto mb-4"
                style={{ boxShadow: '3px 3px 0px #C4A033' }}>
-            <span className="font-press text-sm text-pixel-bg">CC</span>
+            <span className="font-press text-sm text-pixel-bg">RL</span>
           </div>
-          <p className="font-press text-sm text-pixel-gold">CCB ADMIN</p>
-          <p className="font-press text-xs text-pixel-muted mt-1">RE:LUMMA ADMIN</p>
+          <p className="font-press text-sm text-pixel-gold">RE:LUMMA ADMIN</p>
         </div>
 
         <PixelPanel>
@@ -56,7 +55,7 @@ export default function AdminLoginPage() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 onKeyDown={onKey}
-                placeholder="admin@ccblueprint.local"
+                placeholder="admin@relumma.local"
                 className="w-full bg-pixel-bg border-2 border-pixel-border text-pixel-text
                            font-body text-sm px-3 py-2.5
                            focus:outline-none focus:border-pixel-gold placeholder:text-pixel-muted/50"

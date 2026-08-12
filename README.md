@@ -1,6 +1,11 @@
-# Character Career Blueprint
+# Re:Lumma
 
 AI-powered career guidance combining MBTI, Human Design, and career psychology.
+
+(Repo/package names still read `character-career-blueprint` / `ccblueprint` in
+places — internal identifiers, database names, and API paths were
+deliberately left alone during the rebrand to avoid unnecessary churn. Only
+user-facing copy was renamed.)
 
 ## Tech Stack
 
@@ -73,19 +78,30 @@ docker compose down -v
 
 ## Sprint Status
 
+_Last verified against source 2026-08-12 — see `RELUMMA-HEALTH-REPORT.md` in
+the project folder for the full audit this table is based on._
+
 | Sprint | Status | Description |
 |---|---|---|
 | 0 | ✅ | Architecture |
 | 1 | ✅ | Project setup + infrastructure |
-| 2 | ⏳ | Database + Backend foundation |
-| 3 | ⏳ | Landing page |
-| 4 | ⏳ | Character creation form |
-| 5 | ⏳ | AI generation pipeline |
-| 6 | ⏳ | Email delivery |
-| 7 | ⏳ | Blueprint report page |
-| 8 | ⏳ | Admin dashboard |
-| 9 | ⏳ | Integration testing |
-| 10 | ⏳ | Production hardening |
+| 2 | ✅ | Database + backend foundation |
+| 3 | ✅ | Landing page |
+| 4 | ✅ | Character creation form |
+| 5 | ✅ | AI generation pipeline |
+| 6 | ✅ | Email delivery |
+| 7 | ✅ | Blueprint report page |
+| 8 | ✅ | Admin dashboard |
+| 9 | ✅ | Payments (Mayar.id) |
+| 10 | ✅ | Production hardening (Docker prod compose, Nginx prod config) |
+| 11 | ✅ | Blueprint report page polish + tracker page |
+| 12 | ✅ | Landing page cinematic motion redesign |
+| 13 | ✅ | Re:Lumma accounts, free Trial Reading, Habit Tracker, funnel inversion |
+
+No sprints are currently incomplete. Open work is tracked as findings in
+`RELUMMA-HEALTH-REPORT.md`, not as unfinished sprints — most notably a
+critical account/report-linking issue that needs a product decision before
+scaling traffic through login/register (see that report's §5 and §7).
 
 ## Project Structure
 
@@ -97,24 +113,50 @@ character-career-blueprint/
 │
 ├── backend/
 │   ├── app/
-│   │   ├── api/routes/         # FastAPI route handlers
-│   │   ├── models/             # SQLAlchemy models (Sprint 2)
-│   │   ├── tasks/              # Celery tasks (Sprint 5)
+│   │   ├── api/routes/         # FastAPI route handlers (health, submissions,
+│   │   │                       #   reports, admin, payments, auth, trial,
+│   │   │                       #   habits, users)
+│   │   ├── ai/                 # Provider-agnostic AI gateway, prompt
+│   │   │                       #   builder, knowledge loader, output parser
+│   │   │                       #   + providers/ (Gemini)
+│   │   ├── core/                # security (JWT/bcrypt), dependencies (auth
+│   │   │                       #   guards), habit_templates, trial_reading
+│   │   ├── email/               # Resend client + HTML templates
+│   │   ├── models/             # SQLAlchemy models
+│   │   ├── schemas/            # Pydantic request/response schemas
+│   │   ├── services/           # mayar.py — Mayar.id payment gateway client
+│   │   ├── tasks/               # Celery tasks (AI generation, email delivery)
 │   │   ├── config.py           # Pydantic settings
-│   │   ├── database.py         # DB engine + session
+│   │   ├── database.py         # DB engine + session (API pool + worker NullPool)
 │   │   ├── celery_app.py       # Celery configuration
 │   │   └── main.py             # FastAPI app entry point
 │   ├── alembic/                # DB migrations
-│   ├── knowledge/              # AI knowledge base JSONs (Sprint 5)
+│   ├── knowledge/              # MBTI + Human Design static knowledge JSONs
+│   ├── scripts/                # seed.py, generate_knowledge.py
 │   └── requirements.txt
 │
 ├── frontend/
 │   └── src/
-│       ├── app/                # Next.js App Router pages
+│       ├── app/                # Next.js App Router pages — landing, create,
+│       │                       #   pricing, login, register, dashboard,
+│       │                       #   dashboard/habits, blueprint/[token],
+│       │                       #   admin/*
 │       ├── components/
-│       │   ├── layout/         # PixelLayout, Navbar, Footer
-│       │   └── ui/             # PixelPanel, PixelButton, etc.
-│       └── lib/                # utils, constants, types, config
+│       │   ├── layout/         # PixelLayout, PixelNavbar, PixelFooter
+│       │   ├── ui/             # PixelPanel, PixelButton, etc. + ui/motion/
+│       │   │                   #   (aurora/cinematic effects)
+│       │   ├── auth/           # AuthLayout (glassmorphism auth screens)
+│       │   ├── form/            # 5-step CharacterCreationForm + steps
+│       │   ├── trial/          # TrialReadingScreen
+│       │   ├── dashboard/      # WelcomeCard, BlueprintCard, habit widgets
+│       │   ├── habits/          # HabitRow, SimpleProgressBar
+│       │   ├── landing/        # Hero, HowItWorks, Pricing, FAQ, etc.
+│       │   ├── report/         # BlueprintReport and its sub-sections
+│       │   └── admin/          # AdminSidebar, StatusBadge
+│       ├── hooks/               # useActiveSection, useCountUp, useMagnetic,
+│       │                       #   useMousePosition, usePrefersReducedMotion
+│       └── lib/                # api.ts, auth.ts, utils, constants, types,
+│                               #   validation, motion.ts, config
 │
 └── nginx/
     └── nginx.conf
