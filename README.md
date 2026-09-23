@@ -57,6 +57,9 @@ docker compose logs -f backend
 docker compose logs -f worker
 docker compose logs -f frontend
 
+# Run tests
+docker compose exec backend pytest
+
 # Run DB migrations (Sprint 2+)
 docker compose exec backend alembic upgrade head
 

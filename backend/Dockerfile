@@ -12,8 +12,8 @@ RUN pip install --upgrade pip
 # ─── DEVELOPMENT ──────────────────────────────
 FROM base AS development
 
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+COPY requirements.txt requirements-dev.txt .
+RUN pip install -r requirements-dev.txt
 
 EXPOSE 8000
 # CMD is set in docker-compose.yml (supports --reload)
