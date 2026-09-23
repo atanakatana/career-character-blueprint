@@ -21,13 +21,20 @@ async function readErrorDetail(res: Response, fallback: string): Promise<string>
 
 // ─── Submissions ─────────────────────────────────────────────────────────────
 
+// Requires auth as of 2026-08-13 — the backend now stamps ownership of the
+// created submission with the authenticated account's ID rather than
+// inferring it later from an email match (closes an account/report-linking
+// vulnerability; see backend/app/api/routes/submissions.py). The one
+// existing caller (dashboard/page.tsx) already only ever calls this after
+// login, so switching from a plain fetch to authedFetch is a no-op for the
+// app's actual behavior — just now sends the Bearer token the backend
+// requires.
 export async function createSubmission(
   data: SubmissionFormData,
 ): Promise<SubmissionResponse> {
-  const res = await fetch(`${config.api.baseUrl}/api/submissions`, {
-    method:  'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body:    JSON.stringify(data),
+  const res = await authedFetch(`${config.api.baseUrl}/api/submissions`, {
+    method: 'POST',
+    body:   JSON.stringify(data),
   })
 
   if (!res.ok) {

@@ -15,9 +15,10 @@ import { PENDING_ASSESSMENT_KEY } from '@/lib/constants'
 
 export default function HabitTrackerPage() {
   const router = useRouter()
-  const [habits,   setHabits]   = useState<HabitListResponse | null>(null)
-  const [loading,  setLoading]  = useState(true)
-  const [toggling, setToggling] = useState<string | null>(null)
+  const [habits,      setHabits]      = useState<HabitListResponse | null>(null)
+  const [loading,     setLoading]     = useState(true)
+  const [toggling,    setToggling]    = useState<string | null>(null)
+  const [toggleError, setToggleError] = useState('')
 
   const load = useCallback(async () => {
     if (!isLoggedIn()) {
@@ -55,8 +56,14 @@ export default function HabitTrackerPage() {
 
   const handleToggle = async (habitId: string) => {
     setToggling(habitId)
+    setToggleError('')
     try {
       setHabits(await toggleHabit(habitId))
+    } catch (err) {
+      // Previously a failed toggle (network blip, stale habit, etc.) failed
+      // silently — the checkbox just visually reset via `finally` with no
+      // indication anything went wrong. Surface it instead.
+      setToggleError(err instanceof Error ? err.message : 'Could not update that habit. Please try again.')
     } finally {
       setToggling(null)
     }
@@ -87,6 +94,9 @@ export default function HabitTrackerPage() {
               <p className="font-press text-[0.4rem] uppercase tracking-widest text-pixel-muted mb-4">
                 Daily Habits
               </p>
+              {toggleError && (
+                <p role="alert" className="font-press text-[0.38rem] text-pixel-error mb-3">✕ {toggleError}</p>
+              )}
               <div className="space-y-2">
                 {habits.habits.map((h) => (
                   <HabitRow key={h.id} habit={h} onToggle={handleToggle} disabled={toggling === h.id} />

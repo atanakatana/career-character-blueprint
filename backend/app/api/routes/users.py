@@ -1,6 +1,6 @@
 import logging
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select, func
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -28,18 +28,25 @@ async def get_my_blueprint(
     user: User          = Depends(get_current_user),
 ) -> MyBlueprintResponse:
     """
-    Links the account to the existing (unmodified) paid-report pipeline by
-    matching email — the same identifier the pricing/create flow already
-    uses to gate submissions. No foreign key on `submissions` needed.
+    Links the account to the existing paid-report pipeline via
+    `Submission.user_id`, set at *creation* time by the authenticated
+    session that created it (see api/routes/submissions.py) — actual proof
+    of ownership, not an unverified string match.
 
-    Case-insensitive on purpose: `submissions.email` is stored as typed by
-    the user (SubmissionCreate does not normalise case), while `users.email`
-    is always lowercased at registration/login. Comparing case-sensitively
-    would silently miss a real, paid submission over a casing mismatch.
+    Until 2026-08-13 this matched purely by email string (`users.email` vs
+    `submissions.email`), with no foreign key. That was a real vulnerability:
+    registration has no email verification, so anyone who knew a paying
+    customer's email could register an account with it and immediately view
+    that customer's paid report. Fixed in 004_submissions_user_id.py, which
+    also backfilled `user_id` for every pre-fix row (safe because this
+    project has never run against a database with real customers — confirmed
+    2026-09-23). A submission whose email matches no registered user is
+    simply unreachable here, same as one that was never submitted — there is
+    no longer an email-match fallback.
     """
     submission = await db.scalar(
         select(Submission)
-        .where(func.lower(Submission.email) == user.email.lower().strip())
+        .where(Submission.user_id == user.id)
         .options(selectinload(Submission.report))
         .order_by(Submission.created_at.desc())
         .limit(1)

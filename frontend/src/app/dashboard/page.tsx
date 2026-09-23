@@ -25,6 +25,7 @@ export default function DashboardPage() {
   const [habits,    setHabits]    = useState<HabitListResponse | null>(null)
   const [loading,   setLoading]   = useState(true)
   const [toggling,  setToggling]  = useState(false)
+  const [toggleError, setToggleError] = useState('')
 
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [checkoutError,   setCheckoutError]   = useState('')
@@ -102,9 +103,14 @@ export default function DashboardPage() {
 
   const handleToggle = async (habitId: string) => {
     setToggling(true)
+    setToggleError('')
     try {
       const updated = await toggleHabit(habitId)
       setHabits(updated)
+    } catch (err) {
+      // Previously failed silently — the checkbox just visually reset via
+      // `finally` with no indication anything went wrong. Surface it.
+      setToggleError(err instanceof Error ? err.message : 'Could not update that habit. Please try again.')
     } finally {
       setToggling(false)
     }
@@ -158,7 +164,7 @@ export default function DashboardPage() {
           onStartCheckout={handleStartCheckout}
         />
 
-        <TodayHabitsCard habits={habits} onToggle={handleToggle} toggling={toggling} />
+        <TodayHabitsCard habits={habits} onToggle={handleToggle} toggling={toggling} error={toggleError} />
 
         <ProgressOverview habits={habits} />
       </div>

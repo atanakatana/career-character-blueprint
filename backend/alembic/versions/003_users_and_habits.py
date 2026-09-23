@@ -2,20 +2,39 @@
 
 Adds end-user accounts (separate from admin_users) and a lightweight habit
 tracker. Does NOT alter submissions, reports, report_tokens, or payments —
-the existing paid-report pipeline is untouched. Blueprint <-> account linking
-is done at query time by matching User.email to Submission.email, not via a
-foreign key, so no existing table needs a new column.
+the existing paid-report pipeline is untouched here.
 
-Revision ID: 002
-Revises: 001
+Renumbered from "002" to "003" and rechained onto payments (2026-08-13):
+this file and 002_payments.py were both originally stamped revision "002"
+with down_revision "001" — two independent sprint branches (payments in
+sprint 12, this one in sprint 13) that each assumed they were the only
+migration since the initial schema, and neither got renumbered when the
+branches were merged together. `alembic heads` confirms two heads and warns
+"Revision 002 is present more than once" — upgrade/downgrade is ambiguous
+until this is fixed. Payments shipped first chronologically, so this chains
+after it. If you have ever run `alembic upgrade head` against a real
+database before this fix, check `alembic_version` there before applying
+this — it may already have one of the two "002" revisions stamped, in which
+case reconcile manually rather than re-running blind.
+
+Original note, now superseded — kept for history: "Blueprint <-> account
+linking is done at query time by matching User.email to Submission.email,
+not via a foreign key, so no existing table needs a new column." See
+004_submissions_user_id.py — this turned out to be a real vulnerability
+(any account with a matching email could view another user's paid report,
+since registration has no email verification) and is fixed there by adding
+a proper foreign key.
+
+Revision ID: 003
+Revises: 002
 Create Date: 2025-01-01 00:00:00
 """
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID
 
-revision = "002"
-down_revision = "001"
+revision = "003"
+down_revision = "002"
 branch_labels = None
 depends_on = None
 

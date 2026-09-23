@@ -1,0 +1,19 @@
+"""DEPRECATED — superseded by 003_users_and_habits.py, do not use.
+
+This file used to define an Alembic revision "002" that collided with
+002_payments.py (also "002", also down_revision "001") — two independent
+sprint branches that both assumed they were the only migration since the
+initial schema. `alembic heads` reported two heads and warned "Revision 002
+is present more than once", making `alembic upgrade head` ambiguous.
+
+The real migration was renumbered to 003_users_and_habits.py (chained after
+002_payments.py, since payments shipped first chronologically) on
+2026-08-13. This file is intentionally left behind as a stub — deleting it
+outright wasn't possible from the environment that made this fix, and an
+empty stub is safer than a half-deleted migration file. It deliberately
+defines no `revision`/`down_revision`, so Alembic's directory scan skips it
+as not a valid migration.
+
+Safe to actually delete whenever convenient; nothing depends on this
+filename existing.
+"""

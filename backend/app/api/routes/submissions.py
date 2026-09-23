@@ -4,8 +4,10 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
+from app.core.dependencies import get_current_user
 from app.models.submission import Submission
 from app.models.payment import Payment
+from app.models.user import User
 from app.schemas.submission import SubmissionCreate, SubmissionResponse
 from app.celery_app import celery_app
 
@@ -21,20 +23,41 @@ logger = logging.getLogger(__name__)
 )
 async def create_submission(
     data: SubmissionCreate,
-    db: AsyncSession = Depends(get_db),
+    db:   AsyncSession = Depends(get_db),
+    user: User          = Depends(get_current_user),
 ) -> SubmissionResponse:
     """
     Accepts user form data, persists it, and enqueues an async AI generation task.
 
     Returns 202 Accepted immediately — the blueprint is generated in the background
     and delivered via email when ready.
+
+    Requires auth as of 2026-08-13 (previously anonymous, gated only by a
+    Payment.email match). This is part of closing an account/report-linking
+    vulnerability — see 004_submissions_user_id.py and
+    api/routes/users.py::get_my_blueprint for the full picture. Two things
+    changed as a result:
+      1. The submission's email is always the authenticated account's email,
+         never the client-supplied `data.email` — this closes a spoofing
+         angle where a logged-in user could otherwise submit against a
+         payment that isn't theirs by lying about the email in the request
+         body. (The frontend already only ever sent the logged-in user's own
+         email here, so this is a no-op for legitimate use.)
+      2. The new submission is stamped with `user_id`, establishing
+         ownership at creation time from a real authenticated session,
+         instead of it being inferred later from a bare string match.
+    Every current caller (the Dashboard, after login) already sends a Bearer
+    token, so this isn't a breaking change for the app as it exists today —
+    see the audit notes for confirmation nothing else calls this endpoint.
     """
+    email = user.email.lower().strip()
+
     # ── 0. Verify payment ──────────────────────────────────────────────────
     # The submission form is gated behind a Mayar.id payment.
     # A valid paid payment must exist for this email before we accept a submission.
     payment: Payment | None = await db.scalar(
         select(Payment)
-        .where(Payment.email == data.email.lower().strip())
+        .where(Payment.email == email)
         .where(Payment.status == "paid")
         .order_by(Payment.paid_at.desc())
         .limit(1)
@@ -46,7 +69,7 @@ async def create_submission(
         )
 
     # ── 1. Persist the submission ──────────────────────────────────────────
-    submission = Submission(**data.model_dump())
+    submission = Submission(**{**data.model_dump(), "email": email, "user_id": user.id})
     db.add(submission)
     await db.flush()  # Assign ID before referencing in task
 

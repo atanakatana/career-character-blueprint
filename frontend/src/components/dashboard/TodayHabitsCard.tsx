@@ -5,10 +5,11 @@ import { HabitRow } from '@/components/habits/HabitRow'
 import { SimpleProgressBar } from '@/components/habits/SimpleProgressBar'
 import type { HabitListResponse } from '@/lib/types'
 
-export function TodayHabitsCard({ habits, onToggle, toggling }: {
+export function TodayHabitsCard({ habits, onToggle, toggling, error }: {
   habits:   HabitListResponse | null
   onToggle: (id: string) => void
   toggling: boolean
+  error?:   string
 }) {
   if (!habits || habits.habits.length === 0) {
     return (
@@ -33,6 +34,10 @@ export function TodayHabitsCard({ habits, onToggle, toggling }: {
           View all ▸
         </Link>
       </div>
+
+      {error && (
+        <p role="alert" className="font-press text-[0.38rem] text-pixel-error mb-3">✕ {error}</p>
+      )}
 
       <div className="space-y-2 mb-4">
         {habits.habits.slice(0, 4).map((h) => (
