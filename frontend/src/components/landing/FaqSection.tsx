@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus } from 'lucide-react'
-import { MagneticButton, ParticleField } from '@/components/ui/motion'
+import { MagneticButton } from '@/components/ui/motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { fadeUp, staggerContainer, staggerItem, VIEWPORT, EASE_OUT_EXPO } from '@/lib/motion'
 
@@ -86,9 +86,6 @@ export function FaqSection() {
       {/* ── Closing band with floating background ─────────────────────── */}
       <div className="relative mx-auto mt-24 max-w-4xl overflow-hidden border-2 border-pixel-gold bg-pixel-panel"
            style={{ boxShadow: '6px 6px 0 rgba(0,0,0,0.6)' }}>
-        <div className="pointer-events-none absolute inset-0 opacity-70" aria-hidden>
-          <ParticleField density={6} parallax={8} colors={['#F5C542', '#4DA6FF']} />
-        </div>
         <div className="pointer-events-none absolute inset-0" aria-hidden
              style={{ background: 'radial-gradient(ellipse 60% 80% at 50% 50%, rgba(245,197,66,0.08), transparent 70%)' }} />
 

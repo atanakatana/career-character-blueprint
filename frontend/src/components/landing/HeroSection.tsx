@@ -3,9 +3,8 @@
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { ChevronDown, Play, Sparkles } from 'lucide-react'
-import { useMousePosition } from '@/hooks/useMousePosition'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
-import { ParticleField, MagneticButton } from '@/components/ui/motion'
+import { MagneticButton } from '@/components/ui/motion'
 import { EASE_OUT_EXPO } from '@/lib/motion'
 
 /** Headline is revealed word-by-word for a cinematic "title card" feel. */
@@ -27,11 +26,6 @@ const STARS = [
 export function HeroSection() {
   const router = useRouter()
   const reduced = usePrefersReducedMotion()
-  const { x: mx, y: my } = useMousePosition(!reduced)
-
-  // Parallax helper: depth multiplies the normalized pointer offset.
-  const layer = (depth: number) =>
-    reduced ? {} : { transform: `translate3d(${mx * depth}px, ${my * depth}px, 0)` }
 
   const goCreate = () => router.push('/create')
   const watchDemo = () =>
@@ -49,15 +43,15 @@ export function HeroSection() {
       <div className="pointer-events-none absolute inset-0" aria-hidden>
         <div
           className="fx-aurora absolute -left-[10%] top-[6%] h-[42vw] w-[42vw] rounded-full opacity-60"
-          style={{ background: 'radial-gradient(circle, rgba(245,197,66,0.28), transparent 60%)', ...layer(18) }}
+          style={{ background: 'radial-gradient(circle, rgba(245,197,66,0.28), transparent 60%)' }}
         />
         <div
           className="fx-aurora absolute right-[-8%] top-[24%] h-[38vw] w-[38vw] rounded-full opacity-50"
-          style={{ background: 'radial-gradient(circle, rgba(77,166,255,0.26), transparent 60%)', animationDelay: '4s', ...layer(28) }}
+          style={{ background: 'radial-gradient(circle, rgba(77,166,255,0.26), transparent 60%)', animationDelay: '4s' }}
         />
         <div
           className="fx-aurora absolute bottom-[-12%] left-[30%] h-[34vw] w-[34vw] rounded-full opacity-40"
-          style={{ background: 'radial-gradient(circle, rgba(92,226,122,0.22), transparent 60%)', animationDelay: '8s', ...layer(22) }}
+          style={{ background: 'radial-gradient(circle, rgba(92,226,122,0.22), transparent 60%)', animationDelay: '8s' }}
         />
       </div>
 
@@ -71,14 +65,8 @@ export function HeroSection() {
           backgroundSize: '40px 40px',
           maskImage: 'radial-gradient(ellipse 80% 70% at 50% 45%, #000 30%, transparent 85%)',
           WebkitMaskImage: 'radial-gradient(ellipse 80% 70% at 50% 45%, #000 30%, transparent 85%)',
-          ...layer(-8),
         }}
       />
-
-      {/* Pixel dust particle field */}
-      <div className="pointer-events-none absolute inset-0" aria-hidden>
-        <ParticleField density={9} parallax={16} />
-      </div>
 
       {/* Twinkling stars */}
       <div className="pointer-events-none absolute inset-0" aria-hidden>
@@ -102,7 +90,7 @@ export function HeroSection() {
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
 
           {/* ── Left: copy + CTAs ─────────────────────────────────────── */}
-          <div style={layer(6)}>
+          <div>
             {/* Eyebrow */}
             <motion.div
               className="mb-6 inline-flex items-center gap-2 border border-pixel-border bg-pixel-panel/60 px-3 py-1.5 backdrop-blur-sm"
@@ -199,10 +187,8 @@ export function HeroSection() {
             transition={{ duration: 0.9, ease: EASE_OUT_EXPO, delay: 0.5 }}
             style={{ perspective: 1000 }}
           >
-            <div style={layer(-20)}>
-              <div className={reduced ? '' : 'fx-drift'}>
-                <HeroCodex reduced={reduced} />
-              </div>
+            <div className={reduced ? '' : 'fx-drift'}>
+              <HeroCodex reduced={reduced} />
             </div>
           </motion.div>
         </div>
