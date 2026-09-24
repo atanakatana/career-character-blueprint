@@ -2,7 +2,6 @@
 
 import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { AnimatePresence, motion } from 'framer-motion'
 
 import { PixelPanel }    from '@/components/ui/PixelPanel'
 import { PixelButton }   from '@/components/ui/PixelButton'
@@ -35,7 +34,6 @@ export function CharacterCreationForm({ prefillEmail }: { prefillEmail?: string 
   })
 
   const [step,         setStep]         = useState(1)
-  const [direction,    setDirection]    = useState<1 | -1>(1)
   const [errors,       setErrors]       = useState<FormErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError,  setSubmitError]  = useState<string | null>(null)
@@ -61,24 +59,21 @@ export function CharacterCreationForm({ prefillEmail }: { prefillEmail?: string 
       return
     }
     setErrors({})
-    setDirection(1)
     setStep(s => s + 1)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [step, formData])
 
   const handleBack = useCallback(() => {
     setErrors({})
-    setDirection(-1)
     setStep(s => s - 1)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
   const handleGoToStep = useCallback((target: number) => {
     setErrors({})
-    setDirection(target < step ? -1 : 1)
     setStep(target)
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [step])
+  }, [])
 
   // ── Submit ──────────────────────────────────────────────────────────────────
   // The assessment is free and gated behind nothing. Submitting it produces
@@ -143,13 +138,6 @@ export function CharacterCreationForm({ prefillEmail }: { prefillEmail?: string 
   const isLastStep  = step === 5
   const isFirstStep = step === 1
 
-  // Slide direction matches navigation direction
-  const variants = {
-    enter:   (dir: number) => ({ opacity: 0, x: dir > 0 ?  32 : -32 }),
-    center:  ()            => ({ opacity: 1, x: 0 }),
-    exit:    (dir: number) => ({ opacity: 0, x: dir > 0 ? -32 :  32 }),
-  }
-
   return (
     <div className="w-full space-y-6">
 
@@ -168,21 +156,9 @@ export function CharacterCreationForm({ prefillEmail }: { prefillEmail?: string 
         labels={STEP_LABELS}
       />
 
-      {/* Animated step panel */}
+      {/* Step panel */}
       <PixelPanel>
-        <AnimatePresence mode="wait" custom={direction}>
-          <motion.div
-            key={step}
-            custom={direction}
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.22, ease: 'easeInOut' }}
-          >
-            {stepContent[step]}
-          </motion.div>
-        </AnimatePresence>
+        {stepContent[step]}
       </PixelPanel>
 
       {/* Navigation — hidden on Step 5 (has its own submit button) */}

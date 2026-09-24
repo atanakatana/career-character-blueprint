@@ -2,7 +2,7 @@
 
 import { useEffect, useState }  from 'react'
 import Link                     from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 import { PixelPanel }   from '@/components/ui/PixelPanel'
 import { PixelButton }  from '@/components/ui/PixelButton'
@@ -597,16 +597,13 @@ export function BlueprintReport({ token }: { token: string }) {
       .catch((err: Error) => { setErrMsg(err.message); setState('error') })
   }, [token])
 
-  return (
-    <AnimatePresence mode="wait">
-      {state === 'loading'   && <LoadingScreen   key="loading" />}
-      {state === 'not-found' && <NotFoundScreen  key="not-found" />}
-      {state === 'error'     && <ErrorScreen     key="error" message={errMsg} />}
-      {state === 'ready' && report && (
-        isV3(report.report_data)
-          ? <V3Report    key="v3"     report={report} />
-          : <LegacyReport key="legacy" report={report} />
-      )}
-    </AnimatePresence>
-  )
+  if (state === 'loading')   return <LoadingScreen />
+  if (state === 'not-found') return <NotFoundScreen />
+  if (state === 'error')     return <ErrorScreen message={errMsg} />
+  if (state === 'ready' && report) {
+    return isV3(report.report_data)
+      ? <V3Report    report={report} />
+      : <LegacyReport report={report} />
+  }
+  return null
 }

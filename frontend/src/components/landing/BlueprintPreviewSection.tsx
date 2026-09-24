@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { AnimatedCounter, MagneticButton } from '@/components/ui/motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
@@ -126,14 +126,7 @@ export function BlueprintPreviewSection() {
                     ))}
                   </div>
 
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={tab}
-                      initial={{ opacity: 0, y: reduced ? 0 : 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: reduced ? 0 : -10 }}
-                      transition={{ duration: 0.3, ease: EASE_OUT_EXPO }}
-                    >
+                  <div>
                       {tab === 'Profile' && (
                         <div>
                           <SectionLabel n="01" title="Profile Summary" />
@@ -189,8 +182,7 @@ export function BlueprintPreviewSection() {
                           </div>
                         </div>
                       )}
-                    </motion.div>
-                  </AnimatePresence>
+                  </div>
 
                   {/* locked teaser */}
                   <div className="mt-6 flex items-center justify-between border border-pixel-border bg-pixel-bg/40 p-3">
