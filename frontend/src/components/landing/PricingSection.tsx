@@ -3,14 +3,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Gem, Shield, Crown, Check, Lock } from 'lucide-react'
+import { Gem, Shield, Check, Lock } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { TiltCard, MagneticButton } from '@/components/ui/motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { fadeUp, staggerContainer, staggerItem, VIEWPORT, EASE_OUT_EXPO } from '@/lib/motion'
 
 interface Tier {
-  id: string | null           // null = not purchasable yet (Legend)
+  id: string
   rarity: string
   className: string
   Icon: LucideIcon
@@ -23,7 +23,6 @@ interface Tier {
   features: string[]
   locked?: string[]
   popular?: boolean
-  comingSoon?: boolean
 }
 
 const TIERS: Tier[] = [
@@ -55,19 +54,6 @@ const TIERS: Tier[] = [
       'Career goal progress tracking',
       'Account to access your Blueprint anytime',
       'Complete Blueprint + tracker, always available',
-    ],
-  },
-  {
-    id: null, rarity: 'LEGENDARY', className: 'Legend', Icon: Crown, price: 'Coming Soon',
-    tagline: 'Guild Ascension', accent: 'text-pixel-gold', border: 'border-pixel-gold',
-    gradient: 'conic-gradient(from 0deg, transparent 45%, #F5C542, #FFE9A8, #F5C542, transparent 90%)',
-    glow: 'rgba(245,197,66,0.2)', comingSoon: true,
-    features: [
-      'Everything in Adventurer',
-      '1:1 career strategist session',
-      'Quarterly blueprint recalibration',
-      'Private guild community',
-      'Priority blueprint delivery',
     ],
   },
 ]
@@ -114,7 +100,7 @@ export function PricingSection() {
 
         {/* Cards */}
         <motion.div
-          className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-3"
+          className="mx-auto grid max-w-3xl grid-cols-1 items-stretch gap-6 md:grid-cols-2"
           variants={staggerContainer} custom={0.12}
           initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-8%' }}
         >
@@ -126,7 +112,6 @@ export function PricingSection() {
                   reduced={reduced}
                   active={selected === t.id}
                   onSelect={() => {
-                    if (t.comingSoon || !t.id) return
                     setSelected(selected === t.id ? null : t.id)
                     setError('')
                   }}
@@ -185,7 +170,7 @@ function PricingCard({ tier, active, onSelect, reduced }: {
 }) {
   return (
     <div className="group relative h-full">
-      {/* rotating gradient border for the popular / legendary cards */}
+      {/* rotating gradient border for the popular card */}
       {!reduced && (
         <div className="pointer-events-none absolute -inset-[2px] overflow-hidden opacity-0 transition-opacity duration-500 group-hover:opacity-100"
              style={{ opacity: active ? 1 : undefined }} aria-hidden>
@@ -196,12 +181,12 @@ function PricingCard({ tier, active, onSelect, reduced }: {
 
       <div
         onClick={onSelect}
-        role={tier.comingSoon ? undefined : 'button'}
-        tabIndex={tier.comingSoon ? -1 : 0}
-        onKeyDown={(e) => { if (!tier.comingSoon && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onSelect() } }}
-        aria-pressed={tier.comingSoon ? undefined : active}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect() } }}
+        aria-pressed={active}
         className={`relative flex h-full cursor-pointer flex-col border-2 bg-pixel-panel p-6 transition-all duration-300
-          ${active ? tier.border : 'border-pixel-border'} ${tier.comingSoon ? 'cursor-default' : ''}`}
+          ${active ? tier.border : 'border-pixel-border'}`}
         style={{ boxShadow: '4px 4px 0 rgba(0,0,0,0.7)' }}
       >
         {/* shimmer */}
@@ -247,16 +232,10 @@ function PricingCard({ tier, active, onSelect, reduced }: {
 
         {/* CTA */}
         <div className="mt-5">
-          {tier.comingSoon ? (
-            <div className="flex items-center justify-center gap-2 border-2 border-dashed border-pixel-border py-3 font-press text-[0.4rem] text-pixel-muted">
-              <Lock className="h-3 w-3" /> COMING SOON
-            </div>
-          ) : (
-            <div className={`flex items-center justify-center border-2 py-3 font-press text-[0.42rem] transition-colors
-              ${active ? `${tier.border} ${tier.accent} bg-pixel-bg` : 'border-pixel-border text-pixel-muted group-hover:border-pixel-gold group-hover:text-pixel-gold'}`}>
-              {active ? '◆ SELECTED' : '▶ SELECT'}
-            </div>
-          )}
+          <div className={`flex items-center justify-center border-2 py-3 font-press text-[0.42rem] transition-colors
+            ${active ? `${tier.border} ${tier.accent} bg-pixel-bg` : 'border-pixel-border text-pixel-muted group-hover:border-pixel-gold group-hover:text-pixel-gold'}`}>
+            {active ? '◆ SELECTED' : '▶ SELECT'}
+          </div>
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.core.dependencies import get_current_user
+from app.core.entitlements import has_habit_tracker_access
 from app.core.habit_templates import get_habit_template
 from app.models.user import User
 from app.models.habit import Habit
@@ -17,6 +18,21 @@ from app.schemas.habit import HabitItem, HabitListResponse
 
 router = APIRouter(prefix="/habits", tags=["Habit Tracker"])
 logger = logging.getLogger(__name__)
+
+
+async def require_habit_tracker_access(
+    db:   AsyncSession = Depends(get_db),
+    user: User          = Depends(get_current_user),
+) -> User:
+    """The Habit Tracker is a tier2 (Blueprint + Tracker) perk, not available
+    to tier1 customers — see app/core/entitlements.py. Every route below
+    depends on this instead of bare get_current_user."""
+    if not await has_habit_tracker_access(db, user.email):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="The Habit Tracker is part of the Blueprint + Tracker plan.",
+        )
+    return user
 
 
 async def _seed_habits_if_empty(db: AsyncSession, user: User, seed_archetype: Optional[str]) -> None:
@@ -95,7 +111,7 @@ async def _build_list_response(db: AsyncSession, user: User) -> HabitListRespons
 async def list_habits(
     seed_archetype: Optional[str] = None,
     db:   AsyncSession = Depends(get_db),
-    user: User          = Depends(get_current_user),
+    user: User          = Depends(require_habit_tracker_access),
 ) -> HabitListResponse:
     await _seed_habits_if_empty(db, user, seed_archetype)
     return await _build_list_response(db, user)
@@ -107,7 +123,7 @@ async def list_habits(
 async def toggle_habit(
     habit_id: UUID,
     db:   AsyncSession = Depends(get_db),
-    user: User          = Depends(get_current_user),
+    user: User          = Depends(require_habit_tracker_access),
 ) -> HabitListResponse:
     habit = await db.scalar(select(Habit).where(Habit.id == habit_id, Habit.user_id == user.id))
     if habit is None:

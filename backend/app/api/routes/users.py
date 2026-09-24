@@ -6,6 +6,7 @@ from sqlalchemy.orm import selectinload
 
 from app.database import get_db
 from app.core.dependencies import get_current_user
+from app.core.entitlements import get_paid_tier
 from app.models.user import User
 from app.models.submission import Submission
 from app.models.report import Report
@@ -44,6 +45,8 @@ async def get_my_blueprint(
     simply unreachable here, same as one that was never submitted — there is
     no longer an email-match fallback.
     """
+    tier = await get_paid_tier(db, user.email)
+
     submission = await db.scalar(
         select(Submission)
         .where(Submission.user_id == user.id)
@@ -53,19 +56,19 @@ async def get_my_blueprint(
     )
 
     if submission is None:
-        return MyBlueprintResponse(unlocked=False, status="none")
+        return MyBlueprintResponse(unlocked=False, status="none", tier=tier)
 
     if submission.status in ("pending", "processing"):
-        return MyBlueprintResponse(unlocked=False, status=submission.status)
+        return MyBlueprintResponse(unlocked=False, status=submission.status, tier=tier)
 
     if submission.status == "failed":
-        return MyBlueprintResponse(unlocked=False, status="failed")
+        return MyBlueprintResponse(unlocked=False, status="failed", tier=tier)
 
     report: Report | None = submission.report
     if report is None:
         # Marked completed but report missing — treat as still processing
         # rather than erroring the dashboard.
-        return MyBlueprintResponse(unlocked=False, status="processing")
+        return MyBlueprintResponse(unlocked=False, status="processing", tier=tier)
 
     try:
         parsed_report_data = parse_report_data(report.report_data)
@@ -82,6 +85,7 @@ async def get_my_blueprint(
         unlocked=True,
         status="completed",
         token=token,
+        tier=tier,
         report=BlueprintReportResponse(
             id=report.id,
             character_title=report.character_title,

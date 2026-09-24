@@ -84,11 +84,16 @@ export default function DashboardPage() {
 
       setBlueprint(bp)
 
-      const seedArchetype = cachedRaw
-        ? (JSON.parse(cachedRaw) as SubmissionFormData).mbti_type
-        : bp.report?.submission.mbti_type
-      const h = await getHabits(seedArchetype)
-      setHabits(h)
+      // Habit Tracker is a tier2 (Blueprint + Tracker) perk — the backend
+      // 403s a tier1 request, so check first rather than calling and
+      // handling the rejection.
+      if (bp.tier === 'tier2') {
+        const seedArchetype = cachedRaw
+          ? (JSON.parse(cachedRaw) as SubmissionFormData).mbti_type
+          : bp.report?.submission.mbti_type
+        const h = await getHabits(seedArchetype)
+        setHabits(h)
+      }
     } catch {
       // Profile already loaded successfully at this point — blueprint/habits
       // are secondary data. Let the page render with whatever did load
@@ -164,9 +169,15 @@ export default function DashboardPage() {
           onStartCheckout={handleStartCheckout}
         />
 
-        <TodayHabitsCard habits={habits} onToggle={handleToggle} toggling={toggling} error={toggleError} />
+        <TodayHabitsCard
+          habits={habits}
+          onToggle={handleToggle}
+          toggling={toggling}
+          error={toggleError}
+          locked={blueprint?.tier !== 'tier2'}
+        />
 
-        <ProgressOverview habits={habits} />
+        {blueprint?.tier === 'tier2' && <ProgressOverview habits={habits} />}
       </div>
     </PixelLayout>
   )

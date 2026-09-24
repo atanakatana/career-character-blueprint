@@ -189,6 +189,7 @@ export interface MyBlueprintResponse {
   status:   'none' | 'pending' | 'processing' | 'failed' | 'completed'
   report:   BlueprintReportResponse | null
   token:    string | null
+  tier:     'tier1' | 'tier2' | null
 }
 
 // ─── HABIT TRACKER ───────────────────────────────────────────────────────────

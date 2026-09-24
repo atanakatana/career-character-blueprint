@@ -16,6 +16,7 @@ import { PENDING_ASSESSMENT_KEY } from '@/lib/constants'
 export default function HabitTrackerPage() {
   const router = useRouter()
   const [habits,      setHabits]      = useState<HabitListResponse | null>(null)
+  const [locked,      setLocked]      = useState(false)
   const [loading,     setLoading]     = useState(true)
   const [toggling,    setToggling]    = useState<string | null>(null)
   const [toggleError, setToggleError] = useState('')
@@ -26,16 +27,22 @@ export default function HabitTrackerPage() {
       return
     }
     try {
+      const bp = await getMyBlueprint()
+
+      // Habit Tracker is a tier2 (Blueprint + Tracker) perk — the backend
+      // 403s a tier1 request, so check first rather than calling and
+      // handling the rejection.
+      if (bp.tier !== 'tier2') {
+        setLocked(true)
+        return
+      }
+
       const cachedRaw = typeof window !== 'undefined'
         ? window.sessionStorage.getItem(PENDING_ASSESSMENT_KEY)
         : null
-      let seedArchetype: string | undefined
-      if (cachedRaw) {
-        seedArchetype = JSON.parse(cachedRaw).mbti_type
-      } else {
-        const bp = await getMyBlueprint()
-        seedArchetype = bp.report?.submission.mbti_type
-      }
+      const seedArchetype = cachedRaw
+        ? JSON.parse(cachedRaw).mbti_type
+        : bp.report?.submission.mbti_type
       setHabits(await getHabits(seedArchetype))
     } catch {
       // Every call on this page requires auth and there's no partial state
@@ -79,7 +86,24 @@ export default function HabitTrackerPage() {
           <span className="font-press text-[0.4rem] text-pixel-muted">◆ HABIT TRACKER</span>
         </div>
 
-        {loading || !habits ? (
+        {loading ? (
+          <div className="text-center py-16">
+            <span className="font-vt text-4xl text-pixel-gold animate-pixel-float inline-block">◆</span>
+            <p className="font-press text-xs text-pixel-muted mt-4">Loading your habits…</p>
+          </div>
+        ) : locked ? (
+          <PixelPanel>
+            <p className="font-press text-[0.4rem] uppercase tracking-widest text-pixel-muted mb-2">
+              Habit Tracker
+            </p>
+            <p className="font-body text-sm text-pixel-muted mb-4">
+              The Habit Tracker is part of the Blueprint + Tracker plan.
+            </p>
+            <Link href="/#pricing">
+              <PixelButton variant="ghost" size="sm">▶ Upgrade to Unlock</PixelButton>
+            </Link>
+          </PixelPanel>
+        ) : !habits ? (
           <div className="text-center py-16">
             <span className="font-vt text-4xl text-pixel-gold animate-pixel-float inline-block">◆</span>
             <p className="font-press text-xs text-pixel-muted mt-4">Loading your habits…</p>

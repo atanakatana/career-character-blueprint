@@ -15,3 +15,4 @@ class MyBlueprintResponse(BaseModel):
     status:   str  # "none" | "pending" | "processing" | "failed" | "completed"
     report:   BlueprintReportResponse | None = None
     token:    str | None = None  # lets the dashboard deep-link to /blueprint/{token}
+    tier:     str | None = None  # "tier1" | "tier2" | None — see app/core/entitlements.py
