@@ -10,7 +10,7 @@ from app.models.user import User
 from app.models.submission import Submission
 from app.models.report import Report
 from app.models.report_token import ReportToken
-from app.schemas.report import BlueprintReportResponse, ReportData
+from app.schemas.report import BlueprintReportResponse, parse_report_data
 from app.schemas.submission import SubmissionSummary
 from app.schemas.users import MyBlueprintResponse
 
@@ -68,7 +68,7 @@ async def get_my_blueprint(
         return MyBlueprintResponse(unlocked=False, status="processing")
 
     try:
-        parsed_report_data = ReportData(**report.report_data)
+        parsed_report_data = parse_report_data(report.report_data)
     except Exception as exc:
         logger.error(f"[users] Report data validation failed for report {report.id}: {exc}")
         raise HTTPException(

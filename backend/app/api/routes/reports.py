@@ -7,7 +7,7 @@ from sqlalchemy.orm import selectinload
 from app.database import get_db
 from app.models.report_token import ReportToken
 from app.models.report import Report
-from app.schemas.report import BlueprintReportResponse, ReportData
+from app.schemas.report import BlueprintReportResponse, parse_report_data
 from app.schemas.submission import SubmissionSummary
 
 router = APIRouter(prefix="/reports", tags=["Reports"])
@@ -60,7 +60,7 @@ async def get_report_by_token(
 
     # 3. Validate JSONB report_data through the Pydantic schema
     try:
-        parsed_report_data = ReportData(**report.report_data)
+        parsed_report_data = parse_report_data(report.report_data)
     except Exception as exc:
         logger.error(f"Report data validation failed for report {report.id}: {exc}")
         raise HTTPException(
