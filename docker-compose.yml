@@ -85,7 +85,15 @@ services:
     container_name: ccb_frontend
     restart: unless-stopped
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8000
+      # Relative, not absolute — nginx proxies /api/* to the backend on the
+      # SAME origin the browser loaded the page from (see nginx/nginx.conf).
+      # An absolute http://localhost:8000 only works for whoever is on the
+      # host machine; anyone else (ngrok, a real domain, another device)
+      # would have their own browser try to reach ITS OWN localhost:8000,
+      # which doesn't exist. Access the app via http://localhost (nginx,
+      # port 80) — the README's primary documented URL — not :3000 directly,
+      # or this relative path has nothing to resolve against.
+      NEXT_PUBLIC_API_URL: ""
       WATCHPACK_POLLING: "true"
     ports:
       - "3000:3000"
