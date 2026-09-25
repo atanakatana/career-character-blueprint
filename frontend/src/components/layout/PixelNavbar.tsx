@@ -1,11 +1,16 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { PixelButton } from '@/components/ui/PixelButton'
 import { isLoggedIn } from '@/lib/auth'
 
 export function PixelNavbar() {
-  const loggedIn = isLoggedIn()
+  // Server-rendered markup can't know localStorage's contents, so this
+  // starts false on both the server and the client's first render (avoiding
+  // a hydration mismatch) and only reflects the real auth state after mount.
+  const [loggedIn, setLoggedIn] = useState(false)
+  useEffect(() => { setLoggedIn(isLoggedIn()) }, [])
 
   return (
     <header className="w-full border-b-2 border-pixel-border bg-pixel-panel/80 backdrop-blur-sm sticky top-0 z-50">
@@ -33,9 +38,14 @@ export function PixelNavbar() {
               </PixelButton>
             </Link>
           ) : (
-            <Link href="/login" className="font-press text-xs text-pixel-muted hover:text-pixel-gold transition-colors hidden sm:block">
-              Log In
-            </Link>
+            <>
+              <Link href="/login" className="font-press text-xs text-pixel-muted hover:text-pixel-gold transition-colors hidden sm:block">
+                Log In
+              </Link>
+              <Link href="/register" className="font-press text-xs text-pixel-muted hover:text-pixel-gold transition-colors">
+                Sign Up
+              </Link>
+            </>
           )}
 
           <Link href="/create">
