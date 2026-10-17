@@ -1,13 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Gem, Shield, Check, Lock } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { TiltCard, MagneticButton } from '@/components/ui/motion'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
+import { isLoggedIn } from '@/lib/auth'
 import { fadeUp, staggerContainer, staggerItem, VIEWPORT, EASE_OUT_EXPO } from '@/lib/motion'
+import { PENDING_TIER_KEY } from '@/lib/constants'
 
 interface Tier {
   id: string
@@ -65,6 +67,13 @@ export function PricingSection() {
   const [email, setEmail]       = useState('')
   const [error, setError]       = useState('')
 
+  // Starts false on both the server and the client's first render (avoiding
+  // a hydration mismatch, since server-rendered markup can't know
+  // localStorage's contents) and only reflects the real auth state after
+  // mount — same pattern as PixelNavbar.
+  const [loggedIn, setLoggedIn] = useState(false)
+  useEffect(() => { setLoggedIn(isLoggedIn()) }, [])
+
   const selectedTier = TIERS.find((t) => t.id === selected)
 
   // Package selection no longer pays immediately — the flow is now
@@ -72,8 +81,28 @@ export function PricingSection() {
   // the actual Mayar.id checkout is triggered. This keeps the existing
   // /api/payments/create + webhook pipeline completely unchanged; it's
   // just called one step later, from the Dashboard instead of from here.
+  //
+  // Already-logged-in users skip straight to the Dashboard: the email
+  // field below only ever existed to pre-fill the login form, since
+  // checkout itself (dashboard/page.tsx::handleStartCheckout) always uses
+  // the authenticated account's own email, never this one — so asking an
+  // already-authenticated visitor to retype it serves no purpose.
   const handleProceed = () => {
     if (!selected) return
+
+    // Remembered across the assessment too (see CharacterCreationForm's
+    // Trial Reading "Unlock" handler) — someone who picks a tier here
+    // *before* filling out the assessment shouldn't be sent back through
+    // Pricing again once they finish it.
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.setItem(PENDING_TIER_KEY, selected)
+    }
+
+    if (loggedIn) {
+      router.push(`/dashboard?tier=${selected}`)
+      return
+    }
+
     if (!email.trim()) { setError('Please enter your email address.'); return }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError('Please enter a valid email address.'); return }
     setError('')
@@ -135,26 +164,38 @@ export function PricingSection() {
                 <p className="mb-4 text-center font-press text-[0.42rem] text-pixel-gold">
                   ▶ CHECKOUT · {selectedTier.className.toUpperCase()} — {selectedTier.price}
                 </p>
-                <label htmlFor="pricing-email" className="mb-2 block font-press text-[0.4rem] text-pixel-muted">EMAIL ADDRESS</label>
-                <input
-                  id="pricing-email" type="email" value={email}
-                  onChange={(e) => { setEmail(e.target.value); setError('') }}
-                  placeholder="your@email.com"
-                  className="pixel-input"
-                />
-                <p className="mt-2 font-press text-[0.34rem] leading-relaxed text-pixel-muted">
-                  Your blueprint is delivered to this email — make sure it&apos;s correct.
-                </p>
+
+                {loggedIn ? (
+                  <p className="font-press text-[0.36rem] leading-relaxed text-pixel-muted">
+                    You&apos;re already logged in — continue to your dashboard to complete checkout.
+                  </p>
+                ) : (
+                  <>
+                    <label htmlFor="pricing-email" className="mb-2 block font-press text-[0.4rem] text-pixel-muted">EMAIL ADDRESS</label>
+                    <input
+                      id="pricing-email" type="email" value={email}
+                      onChange={(e) => { setEmail(e.target.value); setError('') }}
+                      placeholder="your@email.com"
+                      className="pixel-input"
+                    />
+                    <p className="mt-2 font-press text-[0.34rem] leading-relaxed text-pixel-muted">
+                      Your blueprint is delivered to this email — make sure it&apos;s correct.
+                    </p>
+                  </>
+                )}
+
                 {error && <p className="mt-3 font-press text-[0.4rem] text-pixel-error">{error}</p>}
                 <MagneticButton
                   onClick={handleProceed}
                   aria-label="Unlock your Blueprint"
                   className="pixel-btn-primary mt-4 w-full px-5 py-3 text-press-xs disabled:opacity-45"
                 >
-                  <span className="inline-flex items-center gap-2">▶ UNLOCK YOUR BLUEPRINT</span>
+                  <span className="inline-flex items-center gap-2">
+                    {loggedIn ? '▶ CONTINUE TO DASHBOARD' : '▶ UNLOCK YOUR BLUEPRINT'}
+                  </span>
                 </MagneticButton>
                 <p className="mt-3 text-center font-press text-[0.34rem] leading-relaxed text-pixel-muted">
-                  Log in or create your account next · Secure payment via Mayar.id
+                  {loggedIn ? 'Secure payment via Mayar.id' : 'Log in or create your account next · Secure payment via Mayar.id'}
                 </p>
               </div>
             </motion.div>

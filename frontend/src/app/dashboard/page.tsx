@@ -13,7 +13,7 @@ import {
   createSubmission, createPayment,
 } from '@/lib/api'
 import type { UserProfile, MyBlueprintResponse, HabitListResponse, SubmissionFormData } from '@/lib/types'
-import { PENDING_ASSESSMENT_KEY } from '@/lib/constants'
+import { PENDING_ASSESSMENT_KEY, PENDING_TIER_KEY } from '@/lib/constants'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -72,6 +72,7 @@ export default function DashboardPage() {
           const cached = JSON.parse(cachedRaw) as SubmissionFormData
           await createSubmission({ ...cached, email: me.email })
           window.sessionStorage.removeItem(PENDING_ASSESSMENT_KEY)
+          window.sessionStorage.removeItem(PENDING_TIER_KEY)
           setHasPendingAnswers(false)
           bp = await getMyBlueprint()
         } catch {

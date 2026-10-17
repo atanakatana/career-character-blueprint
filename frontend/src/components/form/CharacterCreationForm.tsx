@@ -21,8 +21,9 @@ import {
   type FormErrors,
 } from '@/lib/validation'
 import { getTrialReading } from '@/lib/api'
+import { isLoggedIn } from '@/lib/auth'
 import type { TrialReadingResponse } from '@/lib/types'
-import { FORM_STEPS, PENDING_ASSESSMENT_KEY } from '@/lib/constants'
+import { FORM_STEPS, PENDING_ASSESSMENT_KEY, PENDING_TIER_KEY } from '@/lib/constants'
 
 const STEP_LABELS = FORM_STEPS.map(s => s.label)
 
@@ -108,10 +109,29 @@ export function CharacterCreationForm({ prefillEmail }: { prefillEmail?: string 
 
   // ── Trial Reading revealed — replaces the wizard entirely ───────────────────
   if (trialData) {
+    const handleUnlock = () => {
+      // Someone who picked a tier on Pricing *before* filling out the
+      // assessment (the dashboard's "Complete the free assessment first"
+      // path) already decided what they're buying — if they're also
+      // already logged in, send them straight back to that tier's
+      // checkout instead of making them pick a tier (and, pre-login-fix,
+      // re-enter an email) all over again. Otherwise, fall back to the
+      // normal Pricing flow.
+      const pendingTier = typeof window !== 'undefined'
+        ? window.sessionStorage.getItem(PENDING_TIER_KEY)
+        : null
+
+      if (pendingTier && isLoggedIn()) {
+        router.push(`/dashboard?tier=${pendingTier}`)
+      } else {
+        router.push('/#pricing')
+      }
+    }
+
     return (
       <TrialReadingScreen
         reading={trialData}
-        onUnlock={() => router.push('/#pricing')}
+        onUnlock={handleUnlock}
       />
     )
   }

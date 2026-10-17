@@ -67,6 +67,12 @@ export type FormStep = typeof FORM_STEPS[number]
  *  logging in / paying. Cleared once replayed through /api/submissions. */
 export const PENDING_ASSESSMENT_KEY = 'relumma_pending_assessment'
 
+/** Remembers a tier picked on Pricing *before* the assessment is filled out
+ *  (the "choose package, then do the trial" order) — so Trial Reading's
+ *  "Unlock" button can jump straight back to that tier's checkout instead of
+ *  sending an already-decided user back through Pricing again. */
+export const PENDING_TIER_KEY = 'relumma_pending_tier'
+
 // ─── REPORT SECTIONS ───────────────────────────────────────────────────────
 export const REPORT_SECTIONS = [
   { id: 'profile-summary',         label: '01 — Profile Summary' },
