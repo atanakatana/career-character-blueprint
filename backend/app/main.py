@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from app.config import settings
-from app.api.routes import health, submissions, reports, admin, payments
+from app.api.routes import health, submissions, reports, admin, payments, auth, habit_tracker
 
 
 @asynccontextmanager
@@ -41,3 +41,5 @@ app.include_router(payments.router,     prefix="/api")
 app.include_router(submissions.router,  prefix="/api")
 app.include_router(reports.router,      prefix="/api")
 app.include_router(admin.router,        prefix="/api")
+app.include_router(auth.router,         prefix="/api")
+app.include_router(habit_tracker.router, prefix="/api")

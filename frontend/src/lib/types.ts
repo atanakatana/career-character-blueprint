@@ -157,3 +157,59 @@ export interface ApiError {
 }
 
 export type LoadingState = 'idle' | 'loading' | 'success' | 'error'
+
+// ─── AUTH ────────────────────────────────────────────────────────────────────
+export interface RegisterPayload {
+  email:    string
+  password: string
+  nickname: string
+}
+
+export interface LoginPayload {
+  email:    string
+  password: string
+}
+
+export interface AuthResponse {
+  access_token: string
+  token_type:   string
+  expires_in:   number
+}
+
+export interface UserProfile {
+  id:            string
+  email:         string
+  nickname:      string
+  is_active:     boolean
+  last_login_at: string | null
+  created_at:    string
+}
+
+// ─── HABIT TRACKER ───────────────────────────────────────────────────────────
+export interface TrackerQuest {
+  id:            string
+  title:         string
+  description:   string
+  time_estimate: string | null
+  xp_reward:     number
+  status:        'active' | 'completed'
+  source:        'example' | 'generated'
+  completed_at:  string | null
+}
+
+export interface TrackerState {
+  id:                  string
+  target_job:          string | null
+  xp:                  number
+  level:               number
+  current_streak:      number
+  longest_streak:      number
+  last_completed_date: string | null
+  quests:              TrackerQuest[]
+}
+
+export interface CompleteQuestResponse {
+  tracker:    TrackerState
+  xp_gained:  number
+  leveled_up: boolean
+}
