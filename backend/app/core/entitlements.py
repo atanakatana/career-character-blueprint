@@ -1,6 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.models.payment import Payment
 
 # The Habit Tracker is a Blueprint + Tracker (tier2) perk — see the pricing
@@ -14,7 +15,15 @@ async def get_paid_tier(db: AsyncSession, email: str) -> str | None:
 
     tier2 is a superset of tier1's entitlements, so if a customer somehow
     has both (e.g. bought tier1, later upgraded), tier2 wins.
+
+    If settings.DEV_UNLOCK_HABIT_TRACKER is on, skip the Payment lookup
+    entirely and report tier2 for anyone — local/testing convenience only,
+    never set outside a dev .env. Does not touch the real payment gate in
+    submissions.py.
     """
+    if settings.DEV_UNLOCK_HABIT_TRACKER:
+        return "tier2"
+
     result = await db.execute(
         select(Payment.tier).where(
             Payment.email == email.lower().strip(),

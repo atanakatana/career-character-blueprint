@@ -22,12 +22,19 @@ export function PixelNavbar() {
           </span>
         </Link>
 
-        {/* CTA */}
-        <Link href="/create">
-          <PixelButton variant="primary" size="sm">
-            ▶ Start Quest
-          </PixelButton>
-        </Link>
+        {/* Nav links + CTA */}
+        <div className="flex items-center gap-3">
+          <Link href="/dashboard/tracker">
+            <PixelButton variant="ghost" size="sm">
+              🎮 Habit Tracker
+            </PixelButton>
+          </Link>
+          <Link href="/create">
+            <PixelButton variant="primary" size="sm">
+              ▶ Start Quest
+            </PixelButton>
+          </Link>
+        </div>
 
       </div>
     </header>

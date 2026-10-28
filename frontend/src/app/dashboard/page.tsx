@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { getMe } from '@/lib/api'
-import { logout } from '@/lib/auth'
 import { PixelPanel } from '@/components/ui/PixelPanel'
 import { PixelButton } from '@/components/ui/PixelButton'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
@@ -37,13 +36,6 @@ export default function DashboardPage() {
           </Link>
         </PixelPanel>
       </AnimatedSection>
-
-      <button
-        onClick={logout}
-        className="font-body text-sm text-pixel-muted hover:text-pixel-text underline"
-      >
-        Log out
-      </button>
     </div>
   )
 }

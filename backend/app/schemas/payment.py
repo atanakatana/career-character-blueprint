@@ -11,6 +11,10 @@ class PaymentCreateRequest(BaseModel):
     tier:  str   # 'tier1' | 'tier2'
 
 
+class DevMockConfirmRequest(BaseModel):
+    order_id: str
+
+
 # ── Response schemas ──────────────────────────────────────────────────────────
 
 class PaymentCreateResponse(BaseModel):
@@ -18,6 +22,12 @@ class PaymentCreateResponse(BaseModel):
     payment_url: str
     tier:        str
     amount:      int
+
+
+class DevMockConfirmResponse(BaseModel):
+    email:  str
+    tier:   str
+    amount: int
 
 
 class PaymentStatusResponse(BaseModel):

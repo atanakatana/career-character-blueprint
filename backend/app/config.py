@@ -54,6 +54,13 @@ class Settings(BaseSettings):
     TIER1_PRICE: int = 149_000   # Career Blueprint only
     TIER2_PRICE: int = 299_000   # Career Blueprint + Habit Tracker
 
+    # ── Testing ────────────────────────────────────────────────────────────
+    # When true, every logged-in user is treated as tier2-entitled for the
+    # Habit Tracker ONLY — does not affect the /create submission payment
+    # gate (app/api/routes/submissions.py), which still requires a real paid
+    # Payment row. Must default False; only flip in a local/dev .env.
+    DEV_UNLOCK_HABIT_TRACKER: bool = False
+
     # ── CORS ───────────────────────────────────────────────────────────────
     ALLOWED_ORIGINS: list[str] = [
         "http://localhost:3000",

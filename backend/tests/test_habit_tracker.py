@@ -2,10 +2,19 @@ from datetime import datetime, timezone
 
 import pytest
 
+from app.config import settings
 from app.models.payment import Payment
 from app.models.habit_tracker import HabitTracker
 
 pytestmark = pytest.mark.asyncio(loop_scope="session")
+
+
+@pytest.fixture(autouse=True)
+def _real_gating(monkeypatch):
+    """These tests verify the real Payment-based gating — force the
+    DEV_UNLOCK_HABIT_TRACKER convenience flag off regardless of whatever a
+    local .env has it set to, so results don't depend on ambient config."""
+    monkeypatch.setattr(settings, "DEV_UNLOCK_HABIT_TRACKER", False)
 
 
 async def _register_and_login(client, email: str) -> str:

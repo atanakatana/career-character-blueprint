@@ -69,12 +69,18 @@ async def create_payment_link(
         ValueError if the tier is invalid.
     """
     if not settings.MAYAR_API_KEY:
-        # Dry-run mode for local development
+        # Dry-run mode for local development — see api/routes/payments.py's
+        # /payments/dev-mock-confirm, which this mock page calls instead of
+        # a real Mayar checkout.
         logger.warning("[Mayar] MAYAR_API_KEY not set — returning mock payment link")
         tier_cfg = TIER_CONFIG.get(tier, TIER_CONFIG["tier1"])
+        mock_url = (
+            f"{settings.FRONTEND_BASE_URL}/dev-mock-payment"
+            f"?order={order_id}&email={quote(email)}&tier={tier}&amount={tier_cfg['amount']}"
+        )
         return {
             "mayar_product_id": f"mock-{order_id[:8]}",
-            "payment_url":      f"http://localhost:3000/dev-mock-payment?order={order_id}&email={quote(email)}",
+            "payment_url":      mock_url,
             "amount":           tier_cfg["amount"],
         }
 

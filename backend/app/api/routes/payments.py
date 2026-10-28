@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.database import get_db
 from app.models.payment import Payment
 from app.models.admin_user import AdminUser
@@ -13,7 +14,7 @@ from app.core.dependencies import get_current_admin
 from app.schemas.payment import (
     PaymentCreateRequest, PaymentCreateResponse,
     PaymentStatusResponse, PaymentAdminItem,
-    MayarWebhookPayload,
+    MayarWebhookPayload, DevMockConfirmRequest, DevMockConfirmResponse,
 )
 from app.services.mayar import create_payment_link, MayarError, TIER_CONFIG
 
@@ -78,6 +79,46 @@ async def create_payment(
         tier=tier,
         amount=result["amount"],
     )
+
+
+# ── Dev-only: confirm a mock payment ───────────────────────────────────────────
+
+@router.post(
+    "/dev-mock-confirm",
+    response_model=DevMockConfirmResponse,
+    summary="[DEV ONLY] Mark a mock payment as paid, standing in for a real Mayar webhook",
+)
+async def dev_mock_confirm(
+    body: DevMockConfirmRequest,
+    db:   AsyncSession = Depends(get_db),
+) -> DevMockConfirmResponse:
+    """
+    Only usable while MAYAR_API_KEY is unset — the exact same condition
+    under which create_payment_link() hands out a mock payment_url instead
+    of a real Mayar checkout link (see app/services/mayar.py). Once a real
+    key is configured, this 404s and real Mayar webhooks take over; it
+    can't be hit by accident in a real environment.
+    """
+    if settings.MAYAR_API_KEY:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Dev mock payment confirmation is disabled while a real MAYAR_API_KEY is configured.",
+        )
+
+    payment: Payment | None = await db.scalar(
+        select(Payment).where(Payment.mayar_order_id == body.order_id)
+    )
+    if payment is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Unknown order_id")
+
+    if payment.status != "paid":
+        payment.status = "paid"
+        payment.paid_at = datetime.now(timezone.utc)
+        payment.webhook_payload = {"source": "dev-mock-confirm", "order_id": body.order_id}
+        await db.commit()
+        logger.info("[Payment] Dev mock payment confirmed: order=%s email=%s", body.order_id, payment.email)
+
+    return DevMockConfirmResponse(email=payment.email, tier=payment.tier, amount=payment.amount)
 
 
 # ── Mayar.id webhook ──────────────────────────────────────────────────────────
